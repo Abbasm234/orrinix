@@ -194,6 +194,7 @@ absent.
 
 ## License
 
-MIT. This customized version is branded as Orrinix and is based on
-[Jarvis322/macos-sysdata](https://github.com/Jarvis322/macos-sysdata) by
-Yigit Can Polat. The original copyright notice is preserved in `LICENSE`.
+MIT. This customized version is branded, maintained, and published by
+**Abbas Muhammad** as Orrinix. It incorporates MIT-licensed upstream work;
+the original copyright notice is preserved in `LICENSE` as required by the
+license terms.
