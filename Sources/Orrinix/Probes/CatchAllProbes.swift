@@ -52,7 +52,6 @@ struct DeveloperToolProbe: StorageProbe {
         Known(".lima", "Lima virtual machines", "VM disks.", .review),
         Known(".colima", "Colima virtual machine", "VM disk.", .review),
         Known(".claude", "Claude Code data", "Session transcripts, memory, plugins and caches. Deleting loses history.", .review),
-        Known(".codex", "Codex CLI data", "Sessions and caches.", .review),
     ]
 
     /// Top-level dot-folders another probe already reports.
