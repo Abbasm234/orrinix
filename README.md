@@ -27,6 +27,8 @@ This app opens the bucket. It is not a cache cleaner: `~/Library/Caches` is
 one small line among fifty, and the app never deletes anything you did not
 click.
 
+Built for Mac users who want clear answers before they clean.
+
 ## Install
 
 Build from source (Xcode 16 or later):
