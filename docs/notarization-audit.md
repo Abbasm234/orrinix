@@ -63,6 +63,22 @@ current app bundle. The resource bundle and icon are data-only resources.
 - Final ZIP SHA-256:
   `3c86829a852ac31368144f3a9bf5734a2520fc127a74f1a0517d9f2c6996d13b`.
 
+## Release verification (`1.0.1`)
+
+- Release build completed from the SwiftPM package on macOS.
+- Signing identity: `Developer ID Application: Abbas Muhammad (AQU6876589)`.
+- Team ID: `AQU6876589`.
+- Bundle ID: `com.orrinix.mac`.
+- Hardened Runtime: enabled (`flags=0x10000(runtime)`).
+- Secure timestamp: present.
+- Nested executable verification: passed for `Contents/MacOS/Orrinix`.
+- Apple notarization: **Accepted**.
+- Submission ID: `4fa70620-a8c0-4f64-b264-779ea4a0657f`.
+- Ticket stapling and validation: passed.
+- Gatekeeper: accepted, source `Notarized Developer ID`.
+- Final ZIP SHA-256:
+  `deb0d5545dd102d25fe9d04d327c05e6668bef0ee4faac11cdd71571da7c78b5`.
+
 For future releases, the Developer ID certificate must continue to match the
 Apple Developer Team that owns `com.orrinix.mac`, and the secure
 `OrrinixNotary` Keychain profile must remain available. A stable signing
@@ -78,5 +94,5 @@ identity is needed for Full Disk Access grants to persist across rebuilds.
 - Added `docs/releasing.md` with prerequisites, commands, and troubleshooting.
 - The final production workflow intentionally fails instead of falling back to
   ad-hoc signing when required Apple credentials are missing.
-- The `0.3.5` workflow completed with the Developer ID identity and
-  `OrrinixNotary` Keychain profile installed.
+- The `0.3.5` and `1.0.1` workflows completed with the Developer ID identity
+  and `OrrinixNotary` Keychain profile installed.
