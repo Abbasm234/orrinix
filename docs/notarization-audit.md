@@ -47,16 +47,26 @@ There are no embedded frameworks, XPC services, helper executables, dylibs,
 privileged helper bundles, login items, or third-party package binaries in the
 current app bundle. The resource bundle and icon are data-only resources.
 
-## Potential notarization blockers
+## Release verification (`0.3.5`)
 
-1. The installed **Developer ID Application** certificate must match the Apple
-   Developer Team that owns `com.orrinix.mac` (currently `AQU6876589`).
-2. A secure `xcrun notarytool` Keychain profile is required. The release script
-   defaults to `OrrinixNotary` and never stores credentials in the repository.
-3. Apple Developer Program access must permit Developer ID signing and
-   notarization. App Store Connect access alone does not prove that access.
-4. A stable signing identity is needed for Full Disk Access grants to persist
-   across rebuilds.
+- Release build completed from the SwiftPM package on macOS.
+- Signing identity: `Developer ID Application: Abbas Muhammad (AQU6876589)`.
+- Team ID: `AQU6876589`.
+- Bundle ID: `com.orrinix.mac`.
+- Hardened Runtime: enabled (`flags=0x10000(runtime)`).
+- Secure timestamp: present.
+- Nested executable verification: passed for `Contents/MacOS/Orrinix`.
+- Apple notarization: **Accepted**.
+- Submission ID: `d55e49c2-8b83-44ce-a2d2-93782622b6a8`.
+- Ticket stapling and validation: passed.
+- Gatekeeper: accepted, source `Notarized Developer ID`.
+- Final ZIP SHA-256:
+  `3c86829a852ac31368144f3a9bf5734a2520fc127a74f1a0517d9f2c6996d13b`.
+
+For future releases, the Developer ID certificate must continue to match the
+Apple Developer Team that owns `com.orrinix.mac`, and the secure
+`OrrinixNotary` Keychain profile must remain available. A stable signing
+identity is needed for Full Disk Access grants to persist across rebuilds.
 
 ## Changes made for production preparation
 
@@ -68,5 +78,5 @@ current app bundle. The resource bundle and icon are data-only resources.
 - Added `docs/releasing.md` with prerequisites, commands, and troubleshooting.
 - The final production workflow intentionally fails instead of falling back to
   ad-hoc signing when required Apple credentials are missing.
-- Follow-up verification confirmed the Developer ID identity is installed;
-  only the `OrrinixNotary` Keychain profile remains before a release can run.
+- The `0.3.5` workflow completed with the Developer ID identity and
+  `OrrinixNotary` Keychain profile installed.
