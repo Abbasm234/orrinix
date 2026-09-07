@@ -174,17 +174,28 @@ SwiftPM ships, and a test checks that every key has a Turkish translation.
 
 ## Releasing
 
-One command bumps `VERSION`, runs the tests, builds a signed and notarized
-app, commits, tags, pushes, publishes the GitHub release with notes from the
-commit log and updates the Homebrew cask:
+For a production direct-distribution build, use the Developer ID + notarization
+workflow. It verifies the signature, Hardened Runtime, nested code, stapled
+ticket and Gatekeeper before creating the final ZIP:
+
+```bash
+scripts/notarize-release.sh 0.3.5
+```
+
+The final artifact is `dist/Orrinix-v0.3.5-macOS.zip` with a matching SHA-256
+file. It requires a Developer ID Application certificate and an
+`OrrinixNotary` Keychain profile; see [`docs/releasing.md`](docs/releasing.md).
+
+To also bump `VERSION`, commit, tag, push, publish the GitHub release, and
+update the Homebrew cask:
 
 ```bash
 scripts/release.sh          # patch
 scripts/release.sh minor
 ```
 
-It expects `gh` to be logged in and a notarytool keychain profile (once:
-`xcrun notarytool store-credentials sysdata --key AuthKey.p8 --key-id ID --issuer ISSUER`).
+It expects `gh` to be logged in, a configured Homebrew tap, and the same
+notarytool Keychain profile.
 
 ## Requirements
 

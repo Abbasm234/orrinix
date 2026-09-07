@@ -48,10 +48,9 @@ swift test
 shellcheck sysdata scripts/*.sh
 
 printf '%s\n' "$version" > VERSION
-scripts/build-app.sh
-archive="build/Orrinix-$version.zip"
+scripts/notarize-release.sh "$version"
+archive="dist/Orrinix-v$version-macOS.zip"
 [ -f "$archive" ] || { echo "missing $archive" >&2; exit 1; }
-spctl --assess --type execute "build/Orrinix.app"
 
 # Release notes: commits since the previous tag.
 previous=$(git describe --tags --abbrev=0 2>/dev/null || true)
@@ -66,7 +65,7 @@ notes=$(mktemp)
   echo '```bash'
   echo "brew install --cask $tap_repo/$cask" | sed 's|/homebrew-tap/|/tap/|'
   echo '```'
-  echo "or unzip \`Orrinix-$version.zip\` and move the app to /Applications. Signed and notarized. Requires macOS 14 or later."
+  echo "or unzip \`Orrinix-v$version-macOS.zip\` and move the app to /Applications. Signed and notarized. Requires macOS 14 or later."
 } > "$notes"
 
 # Commit, tag, push, publish.
