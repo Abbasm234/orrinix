@@ -11,19 +11,22 @@ enum WindowSnapshot {
         app.appearance = NSAppearance(named: .darkAqua)
 
         let model = ScanModel(scansAutomatically: false)
-        await model.scan()
+        if !CommandLine.arguments.contains("--skip-scan") {
+            await model.scan()
+        }
         render(model: model, to: path)
     }
 
     /// Synchronous on purpose: pumping the run loop is not allowed from an
     /// async function, and SwiftUI needs a few turns to lay the list out.
     private static func render(model: ScanModel, to path: String) {
-        let size = NSSize(width: 460, height: 640)
+        let size = NSSize(width: 480, height: 740)
         let appearance = NSAppearance(named: .darkAqua)
         // The menu bar panel paints its own material; offscreen there is
         // none, so give the view an opaque window background to draw on.
         let root = MenuView()
             .environment(model)
+            .environment(\.colorScheme, .dark)
             .background(Color(nsColor: .windowBackgroundColor))
         let host = NSHostingView(rootView: root)
         host.frame = NSRect(origin: .zero, size: size)

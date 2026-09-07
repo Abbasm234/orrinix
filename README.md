@@ -12,8 +12,10 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" width="460" alt="The System Data window listing simulator runtimes, Xcode caches and other items with their sizes">
+  <img src="assets/screenshot.png" width="480" alt="The redesigned Orrinix dashboard before scanning, showing available storage and Safari storage controls">
 </p>
+
+<p align="center"><sub>Initial dashboard on macOS. Cleanup totals populate after scanning.</sub></p>
 
 ---
 
@@ -29,9 +31,17 @@ click.
 
 Built for Mac users who want clear answers before they clean.
 
+The redesigned dashboard brings a compact storage overview, quick reclaim
+metrics, grouped cleanup locations, and integrated search. The overview uses
+native Liquid Glass on macOS 26 and later, with a material fallback on macOS
+14 and 15 and an opaque surface when Reduce Transparency is enabled.
+
 ## Install
 
-Build from source (Xcode 16 or later):
+Build from source (Xcode 26 or later):
+
+The screenshots show the latest source UI. The downloadable `v1.0.1` release
+predates this redesign. Use Xcode 26 or later to build the new Liquid Glass UI.
 
 ```bash
 git clone https://github.com/Abbasm234/orrinix.git
@@ -46,7 +56,7 @@ The app has a **Filter items** field, plus a **Launch at login** switch in its f
 
 - **Measured inventory.** The icon shows storage locations Orrinix found; it
   is a useful cleanup total, not a promise to exactly match macOS Storage's
-  **System Data** category. The window header says how much of it is safe to
+  **System Data** category. The dashboard shows how much of it is safe to
   free right now. It scans on launch and once a day.
 - **Every item has a real size**, measured on disk, plus a badge:
   **Safe** regenerates automatically, **Review** costs you something (a
@@ -179,10 +189,10 @@ workflow. It verifies the signature, Hardened Runtime, nested code, stapled
 ticket and Gatekeeper before creating the final ZIP:
 
 ```bash
-scripts/notarize-release.sh 0.3.5
+scripts/notarize-release.sh
 ```
 
-The final artifact is `dist/Orrinix-v0.3.5-macOS.zip` with a matching SHA-256
+The final artifact is `dist/Orrinix-vVERSION-macOS.zip` with a matching SHA-256
 file. It requires a Developer ID Application certificate and an
 `OrrinixNotary` Keychain profile; see [`docs/releasing.md`](docs/releasing.md).
 
@@ -199,7 +209,7 @@ notarytool Keychain profile.
 
 ## Requirements
 
-macOS 14 or later. Xcode 16 or later to build. Xcode command line tools for
+macOS 14 or later. Xcode 26 or later to build. Xcode command line tools for
 the simulator and Xcode categories; other tools are optional and skipped when
 absent.
 

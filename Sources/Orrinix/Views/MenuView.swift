@@ -3,6 +3,7 @@ import SwiftUI
 
 struct MenuView: View {
     @Environment(ScanModel.self) private var model
+    @Environment(\.colorScheme) private var colorScheme
     @State private var pendingDeletion: StorageItem?
     @State private var confirmsBatch = false
     @State private var searchQuery = ""
@@ -14,10 +15,8 @@ struct MenuView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Divider()
             if !model.hasFullDiskAccess {
                 accessBanner
-                Divider()
             }
             content
             Divider()
@@ -27,7 +26,8 @@ struct MenuView: View {
             }
             footer
         }
-        .frame(width: 460, height: 640)
+        .frame(width: 480, height: 740)
+        .background(.regularMaterial)
         .task {
             if !model.hasScanned, !model.isScanning { await model.scan() }
         }
@@ -85,22 +85,21 @@ struct MenuView: View {
     // MARK: Header
 
     private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
+        HStack(spacing: 12) {
+            Image(systemName: "internaldrive.fill")
+                .font(.system(size: 23, weight: .medium))
+                .foregroundStyle(.cyan)
+                .frame(width: 44, height: 44)
+                .background(.cyan.opacity(0.10), in: RoundedRectangle(cornerRadius: 14))
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(L("System Data"))
-                        .font(.headline)
-                    if !model.visibleItems.isEmpty {
-                        Text(model.measuredBytes.byteString)
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                    }
+                    Text("Orrinix")
+                        .font(.system(size: 21, weight: .semibold, design: .rounded))
                 }
-                Text(subtitle)
+                Text(model.isScanning ? model.phase : L("On this Mac"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .monospacedDigit()
+                    .lineLimit(1)
             }
             Spacer()
             if model.isScanning {
@@ -108,13 +107,6 @@ struct MenuView: View {
                     .controlSize(.small)
                     .accessibilityLabel(L("Scanning"))
             } else {
-                if !model.visibleItems.isEmpty {
-                    Button(L("Select safe")) {
-                        model.selectAllSafe()
-                    }
-                    .controlSize(.small)
-                    .help(L("Select every item that is regenerated automatically"))
-                }
                 Button {
                     Task { await model.scan() }
                 } label: {
@@ -123,8 +115,7 @@ struct MenuView: View {
                 .controlSize(.small)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(18)
     }
 
     private var subtitle: String {
@@ -147,7 +138,7 @@ struct MenuView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(L("Grant Full Disk Access once"))
                     .font(.caption.weight(.semibold))
-                Text(L("Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app."))
+                Text(L("Allow Orrinix to measure protected storage. Reopen the app after granting access."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -159,49 +150,53 @@ struct MenuView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .background(.orange.opacity(0.08))
+        .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal, 16)
+        .padding(.bottom, 10)
     }
 
     // MARK: Content
 
     @ViewBuilder
     private var content: some View {
-        if model.visibleItems.isEmpty {
-            VStack(spacing: 8) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                overview
                 SafariStorageCard(model: model.safari) {
                     NSWorkspace.shared.open(Self.fullDiskAccessPane)
                 }
-                .padding(.horizontal, 14)
-                .padding(.top, 10)
-                Spacer()
-                if model.isScanning {
-                    ProgressView()
-                    Text(L("Measuring…"))
-                        .foregroundStyle(.secondary)
-                } else {
-                    Image(systemName: "checkmark.circle")
-                        .font(.largeTitle)
-                        .foregroundStyle(.secondary)
-                    Text(L("Nothing to reclaim"))
-                        .foregroundStyle(.secondary)
+                .groupBoxStyle(StorageGroupBoxStyle())
+                HStack {
+                    Text(L("System Data")).font(.headline)
+                    Spacer()
+                    Button(L("Select safe")) { model.selectAllSafe() }
+                        .controlSize(.small)
+                        .disabled(model.visibleItems.isEmpty)
                 }
-                Spacer()
-            }
-            .frame(maxWidth: .infinity)
-        } else {
-            List {
-                Section {
-                    SafariStorageCard(model: model.safari) {
-                        NSWorkspace.shared.open(Self.fullDiskAccessPane)
-                    }
-                    .padding(.vertical, 3)
-                }
-                Section {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
                     TextField(L("Filter items"), text: $searchQuery)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.plain)
+                }
+                .padding(10)
+                .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 10))
+                if model.visibleItems.isEmpty {
+                    HStack {
+                        if model.isScanning { ProgressView().controlSize(.small) }
+                        Text(model.isScanning ? L("Measuring…") : L("Nothing to reclaim"))
+                            .foregroundStyle(.secondary)
+                    }.padding(.vertical, 16)
+                } else if filteredCategories.isEmpty {
+                    Text(L("No matching locations")).foregroundStyle(.secondary).padding(.vertical, 16)
                 }
                 ForEach(filteredCategories, id: \.category) { group in
-                    Section {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text(group.category.title).font(.subheadline.weight(.semibold))
+                            Spacer()
+                            Text(group.total.byteString).monospacedDigit().foregroundStyle(.secondary)
+                        }
+                        Divider()
                         ForEach(group.items) { item in
                             ItemRow(
                                 item: item,
@@ -212,19 +207,60 @@ struct MenuView: View {
                                 onHide: { model.hide(item) }
                             )
                         }
-                    } header: {
-                        HStack {
-                            Text(group.category.title)
-                            Spacer()
-                            Text(group.total.byteString)
-                                .monospacedDigit()
-                        }
                     }
+                    .padding(14)
+                    .background(.quaternary.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
                 }
             }
-            .listStyle(.inset)
-            .scrollContentBackground(.hidden)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
         }
+    }
+
+    private var overview: some View {
+        VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Label(L("Storage overview"), systemImage: "internaldrive")
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
+                    Text(model.isScanning ? L("Scanning") : L("On this Mac"))
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(model.freeBytes.byteString)
+                        .font(.system(size: 36, weight: .medium, design: .rounded))
+                        .monospacedDigit()
+                    Text(L("available")).foregroundStyle(.secondary)
+                }
+                Text(L("System Data found: %@", model.measuredBytes.byteString))
+                    .font(.caption).foregroundStyle(.secondary)
+                Divider()
+                HStack {
+                    Label(L("Measured locations"), systemImage: "folder")
+                    Spacer()
+                    Text("\(model.visibleItems.count)").monospacedDigit()
+                }.font(.caption).foregroundStyle(.secondary)
+            }
+            .padding(18)
+            .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
+            .modifier(OverviewSurface())
+            HStack(spacing: 12) {
+                metric(title: L("Safe to reclaim"), value: model.safeBytes.byteString, symbol: "checkmark.shield", tint: .green)
+                metric(title: L("Reclaimed this session"), value: model.reclaimedBytes.byteString, symbol: "arrow.up.right", tint: .cyan)
+            }
+        }
+    }
+
+    private func metric(title: String, value: String, symbol: String, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: symbol).foregroundStyle(tint)
+            Text(value).font(.system(size: 23, weight: .medium, design: .rounded)).monospacedDigit()
+            Text(title).font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(.quaternary.opacity(0.3), in: RoundedRectangle(cornerRadius: 16))
     }
 
     /// The scan can surface dozens of locations. Filtering stays local to the
@@ -292,8 +328,6 @@ struct MenuView: View {
                 .keyboardShortcut("q")
             }
             HStack {
-                authorBadge
-                Spacer()
                 Toggle(L("Shut down simulators at power off"), isOn: Binding(
                     get: { model.shutsDownSimulatorsAtPowerOff },
                     set: { model.shutsDownSimulatorsAtPowerOff = $0 }
@@ -384,5 +418,31 @@ struct MenuView: View {
             lines.append(L("1 item needs root; the password is asked once."))
         }
         return lines.joined(separator: "\n")
+    }
+}
+
+private struct OverviewSurface: ViewModifier {
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if reduceTransparency {
+            content.background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 20))
+        } else if #available(macOS 26.0, *) {
+            content.glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20))
+        } else {
+            content.background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        }
+    }
+}
+
+private struct StorageGroupBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            configuration.label
+            configuration.content.frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(16)
+        .background(.quaternary.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
     }
 }

@@ -2,6 +2,14 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "Storage overview": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama özeti"}}}},
+    "On this Mac": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Mac’te"}}}},
+    "available": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "kullanılabilir"}}}},
+    "Measured locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ölçülen konumlar"}}}},
+    "Safe to reclaim": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenle temizlenebilir"}}}},
+    "Reclaimed this session": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu oturumda kazanılan"}}}},
+    "No matching locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Eşleşen konum yok"}}}},
+    "Allow Orrinix to measure protected storage. Reopen the app after granting access.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix’in korumalı depolamayı ölçmesine izin verin. Erişim verdikten sonra uygulamayı yeniden açın."}}}},
     "%@ free on disk": {
       "localizations": {
         "tr": {
