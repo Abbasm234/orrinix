@@ -23,7 +23,6 @@ notary_profile=${NOTARY_PROFILE:-OrrinixNotary}
 requested_identity=${CODESIGN_IDENTITY:-}
 requested_team=${DEVELOPMENT_TEAM:-}
 
-build_dir="$root/build"
 dist_dir="$root/dist"
 app_bundle="$dist_dir/$app_name.app"
 app_binary="$app_bundle/Contents/MacOS/$app_name"
@@ -54,6 +53,7 @@ identities=$(security find-identity -p codesigning -v 2>/dev/null || true)
 developer_identities=$(printf '%s\n' "$identities" | sed -n 's/.*"\(Developer ID Application:[^"]*\)".*/\1/p')
 [ -n "$developer_identities" ] \
   || die "no Developer ID Application certificate is installed; create one in Xcode > Settings > Accounts > Manage Certificates"
+developer_identity_count=$(printf '%s\n' "$developer_identities" | awk 'NF { count += 1 } END { print count + 0 }')
 
 identity="$requested_identity"
 if [ -n "$identity" ]; then
@@ -63,6 +63,8 @@ else
   if [ -n "$requested_team" ]; then
     identity=$(printf '%s\n' "$developer_identities" | grep -F "($requested_team)" | head -1 || true)
     [ -n "$identity" ] || die "no Developer ID Application identity matches DEVELOPMENT_TEAM=$requested_team"
+  elif [ "$developer_identity_count" -ne 1 ]; then
+    die "multiple Developer ID Application identities are installed; set CODESIGN_IDENTITY or DEVELOPMENT_TEAM"
   else
     identity=$(printf '%s\n' "$developer_identities" | head -1)
   fi
