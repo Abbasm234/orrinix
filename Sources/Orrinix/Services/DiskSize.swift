@@ -1,4 +1,52 @@
+import Darwin
 import Foundation
+
+/// Fast, volume-level accounting. Directory probes are explanatory estimates
+/// and must never be used for these values.
+struct StorageMetrics: Equatable, Sendable {
+    let totalBytes: Int64
+    let physicalFreeBytes: Int64
+    let usedBytes: Int64
+    let importantUsageAvailableBytes: Int64?
+    let opportunisticAvailableBytes: Int64?
+    let estimatedReclaimableBytes: Int64?
+    let mountPoint: URL
+    let filesystemType: String?
+    let volumeName: String?
+    let updatedAt: Date
+
+    init(
+        totalBytes: Int64,
+        physicalFreeBytes: Int64,
+        importantUsageAvailableBytes: Int64? = nil,
+        opportunisticAvailableBytes: Int64? = nil,
+        mountPoint: URL = URL(fileURLWithPath: "/System/Volumes/Data"),
+        filesystemType: String? = nil,
+        volumeName: String? = nil,
+        updatedAt: Date = .now
+    ) {
+        let total = max(totalBytes, 0)
+        let free = min(max(physicalFreeBytes, 0), total)
+        let important = importantUsageAvailableBytes.map { min(max($0, free), total) }
+        let opportunistic = opportunisticAvailableBytes.map { min(max($0, free), total) }
+        self.totalBytes = total
+        self.physicalFreeBytes = free
+        usedBytes = total - free
+        self.importantUsageAvailableBytes = important
+        self.opportunisticAvailableBytes = opportunistic
+        estimatedReclaimableBytes = important.map { max($0 - free, 0) }
+        self.mountPoint = mountPoint
+        self.filesystemType = filesystemType
+        self.volumeName = volumeName
+        self.updatedAt = updatedAt
+    }
+
+    /// The maximum available capacity macOS advertises after reclaiming
+    /// purgeable data. It is intentionally never shown as primary Free.
+    var potentialAvailableBytes: Int64? {
+        importantUsageAvailableBytes ?? opportunisticAvailableBytes
+    }
+}
 
 enum DiskSize {
     /// Allocated bytes under `url`, following the same rules Finder uses for
@@ -67,20 +115,78 @@ enum DiskSize {
         return sizes
     }
 
-    static func freeSpace() -> Int64 {
-        let values = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey])
-        return Int64(values?.volumeAvailableCapacity ?? 0)
+    /// Reads the startup Data volume's physical filesystem capacity.
+    /// `statfs.f_bavail` is the current free block count; the URL capacity
+    /// values are retained only as separately-labelled reclaimable hints.
+    static func metrics(at mountPoint: URL = startupDataVolume) -> StorageMetrics {
+        let values = try? mountPoint.resourceValues(forKeys: [
+            .volumeAvailableCapacityForImportantUsageKey,
+            .volumeAvailableCapacityForOpportunisticUsageKey,
+            .volumeNameKey,
+        ])
+        let important = values?.volumeAvailableCapacityForImportantUsage.flatMap { $0 > 0 ? Int64($0) : nil }
+        let opportunistic = values?.volumeAvailableCapacityForOpportunisticUsage.flatMap { $0 > 0 ? Int64($0) : nil }
+
+        if var stats = statfsValues(for: mountPoint.path),
+           let total = byteCount(blocks: stats.f_blocks, blockSize: stats.f_bsize),
+           let free = byteCount(blocks: stats.f_bavail, blockSize: stats.f_bsize) {
+            return StorageMetrics(
+                totalBytes: total,
+                physicalFreeBytes: free,
+                importantUsageAvailableBytes: important,
+                opportunisticAvailableBytes: opportunistic,
+                mountPoint: mountPoint,
+                filesystemType: filesystemName(&stats),
+                volumeName: values?.volumeName
+            )
+        }
+
+        if let attributes = try? FileManager.default.attributesOfFileSystem(forPath: mountPoint.path),
+           let total = (attributes[.systemSize] as? NSNumber)?.int64Value,
+           let free = (attributes[.systemFreeSize] as? NSNumber)?.int64Value {
+            return StorageMetrics(
+                totalBytes: total,
+                physicalFreeBytes: free,
+                importantUsageAvailableBytes: important,
+                opportunisticAvailableBytes: opportunistic,
+                mountPoint: mountPoint,
+                volumeName: values?.volumeName
+            )
+        }
+
+        let fallback = try? mountPoint.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityKey])
+        return StorageMetrics(
+            totalBytes: Int64(fallback?.volumeTotalCapacity ?? 0),
+            physicalFreeBytes: Int64(fallback?.volumeAvailableCapacity ?? 0),
+            importantUsageAvailableBytes: important,
+            opportunisticAvailableBytes: opportunistic,
+            mountPoint: mountPoint,
+            volumeName: values?.volumeName
+        )
     }
 
-    /// Space macOS would free on demand (snapshots, purgeable caches). Finder
-    /// shows it as the hatched part of the storage bar.
-    static func purgeableSpace() -> Int64 {
-        let values = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [
-            .volumeAvailableCapacityKey, .volumeAvailableCapacityForImportantUsageKey,
-        ])
-        let free = Int64(values?.volumeAvailableCapacity ?? 0)
-        let important = values?.volumeAvailableCapacityForImportantUsage ?? 0
-        return max(important - free, 0)
+    static var startupDataVolume: URL {
+        let data = URL(fileURLWithPath: "/System/Volumes/Data")
+        return data.exists ? data : URL(fileURLWithPath: "/")
+    }
+
+    private static func statfsValues(for path: String) -> statfs? {
+        var stats = statfs()
+        guard path.withCString({ statfs($0, &stats) }) == 0 else { return nil }
+        return stats
+    }
+
+    private static func byteCount(blocks: UInt64, blockSize: UInt32) -> Int64? {
+        let blockSize = UInt64(blockSize)
+        guard blockSize > 0, blocks <= UInt64(Int64.max) / blockSize else { return nil }
+        return Int64(blocks * blockSize)
+    }
+
+    private static func filesystemName(_ stats: inout statfs) -> String? {
+        withUnsafeBytes(of: &stats.f_fstypename) { raw in
+            let bytes = raw.prefix { $0 != 0 }
+            return bytes.isEmpty ? nil : String(decoding: bytes, as: UTF8.self)
+        }
     }
 
     /// The `limit` biggest direct children of a directory, measured on disk.

@@ -9,17 +9,25 @@ private let xcrun = "/usr/bin/xcrun"
 struct SnapshotProbe: StorageProbe {
     func probe() async -> [StorageItem] {
         guard let result = try? await Shell.run("/usr/bin/tmutil", ["listlocalsnapshots", "/"]) else { return [] }
-        let count = result.output
+        let snapshots = result.output
             .split(separator: "\n")
             .filter { $0.contains("com.apple.TimeMachine") }
-            .count
+        let dates = snapshots.compactMap { line -> String? in
+            guard let suffix = line.split(separator: ".").last else { return nil }
+            return suffix.count >= 19 ? String(suffix.prefix(19)) : nil
+        }.sorted()
+        let count = snapshots.count
         guard count > 0 else { return [] }
+
+        let range = if let oldest = dates.first, let newest = dates.last {
+            " Oldest: \(oldest). Newest: \(newest)."
+        } else { "" }
 
         return [StorageItem(
             id: "snapshots",
             category: .snapshots,
             name: "\(count) local snapshot\(count == 1 ? "" : "s")",
-            detail: "Hidden APFS snapshots kept between Time Machine runs. Size is not reported by APFS; the next backup recreates one.",
+            detail: "Hidden APFS snapshots kept between Time Machine runs. Size managed by APFS; the next backup recreates one.\(range)",
             sizeBytes: nil,
             safety: .safe,
             action: .privilegedScript("tmutil deletelocalsnapshots / ; tmutil thinlocalsnapshots / 9999999999999 4")

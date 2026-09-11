@@ -29,6 +29,7 @@ struct MenuView: View {
         .frame(width: 480, height: 740)
         .background(.regularMaterial)
         .task {
+            model.refreshStorageMetrics()
             if !model.hasScanned, !model.isScanning { await model.scan() }
         }
     }
@@ -118,17 +119,6 @@ struct MenuView: View {
         .padding(18)
     }
 
-    private var subtitle: String {
-        if model.isScanning, !model.phase.isEmpty {
-            return model.phase
-        }
-        if model.visibleItems.isEmpty {
-            return L("%@ free on disk", model.freeBytes.byteString)
-        }
-        return L("%@ safe to free now · %@ free on disk · %@ purgeable",
-                 model.safeBytes.byteString, model.freeBytes.byteString, model.purgeableBytes.byteString)
-    }
-
     // MARK: Full Disk Access
 
     private var accessBanner: some View {
@@ -164,10 +154,12 @@ struct MenuView: View {
                 overview
                 SafariStorageCard(model: model.safari) {
                     NSWorkspace.shared.open(Self.fullDiskAccessPane)
+                } onGlobalCleanupFinished: {
+                    model.refreshStorageMetrics()
                 }
                 .groupBoxStyle(StorageGroupBoxStyle())
                 HStack {
-                    Text(L("System Data")).font(.headline)
+                    Text(L("Estimated System Data")).font(.headline)
                     Spacer()
                     Button(L("Select safe")) { model.selectAllSafe() }
                         .controlSize(.small)
@@ -228,19 +220,30 @@ struct MenuView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(model.freeBytes.byteString)
+                    Text(model.storageMetrics.physicalFreeBytes.byteString)
                         .font(.system(size: 36, weight: .medium, design: .rounded))
                         .monospacedDigit()
-                    Text(L("available")).foregroundStyle(.secondary)
+                    Text(L("Free now")).foregroundStyle(.secondary)
                 }
-                Text(L("System Data found: %@", model.measuredBytes.byteString))
+                Text(L("Estimated System Data: %@", model.measuredBytes.byteString))
                     .font(.caption).foregroundStyle(.secondary)
+                    .help(L("System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements."))
+                if let reclaimable = model.storageMetrics.estimatedReclaimableBytes {
+                    metricRow(L("Potentially reclaimable"), reclaimable.byteString)
+                }
+                if let potential = model.storageMetrics.potentialAvailableBytes {
+                    metricRow(L("Potential available"), potential.byteString)
+                }
                 Divider()
                 HStack {
                     Label(L("Measured locations"), systemImage: "folder")
                     Spacer()
                     Text("\(model.visibleItems.count)").monospacedDigit()
                 }.font(.caption).foregroundStyle(.secondary)
+                DisclosureGroup(L("Storage Diagnostics")) {
+                    diagnostics
+                }
+                .font(.caption)
             }
             .padding(18)
             .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
@@ -249,6 +252,40 @@ struct MenuView: View {
                 metric(title: L("Safe to reclaim"), value: model.safeBytes.byteString, symbol: "checkmark.shield", tint: .green)
                 metric(title: L("Reclaimed this session"), value: model.reclaimedBytes.byteString, symbol: "arrow.up.right", tint: .cyan)
             }
+        }
+    }
+
+    private func metricRow(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label)
+            Spacer()
+            Text(value).monospacedDigit()
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+
+    private var diagnostics: some View {
+        let metrics = model.storageMetrics
+        return VStack(alignment: .leading, spacing: 3) {
+            diagnosticRow(L("Mount"), metrics.mountPoint.path)
+            diagnosticRow(L("Total"), "\(metrics.totalBytes) bytes")
+            diagnosticRow(L("Used"), "\(metrics.usedBytes) bytes")
+            diagnosticRow(L("Physical free"), "\(metrics.physicalFreeBytes) bytes")
+            diagnosticRow(L("Available for Important Usage"), metrics.importantUsageAvailableBytes.map { "\($0) bytes" } ?? L("Unavailable"))
+            diagnosticRow(L("Available for Opportunistic Usage"), metrics.opportunisticAvailableBytes.map { "\($0) bytes" } ?? L("Unavailable"))
+            diagnosticRow(L("Filesystem"), metrics.filesystemType ?? L("Unavailable"))
+            diagnosticRow(L("Volume"), metrics.volumeName ?? L("Unavailable"))
+        }
+        .textSelection(.enabled)
+        .padding(.top, 4)
+    }
+
+    private func diagnosticRow(_ label: String, _ value: String) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(label).foregroundStyle(.secondary)
+            Spacer(minLength: 8)
+            Text(value).monospaced().multilineTextAlignment(.trailing)
         }
     }
 

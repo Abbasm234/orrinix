@@ -73,8 +73,9 @@ The app has a **Filter items** field, plus a **Launch at login** switch in its f
   password is asked once. **Select safe** ticks everything regenerable.
 - **Hide.** The eye button removes an item from future scans (Ollama models
   you want to keep, say). A footer link brings hidden items back.
-- **Purgeable space** is shown in the header, so the effect of deleting
-  snapshots is visible.
+- **Free now is physical filesystem space.** Potentially reclaimable APFS
+  capacity is shown separately when macOS exposes it; it is never blended into
+  the primary Free value.
 - **Safari Storage Cleaner.** A dedicated card measures Safari WebsiteData,
   caches, and oversized WebKit SQLite WAL files without offering the Safari
   container itself for deletion. It recommends a single website origin when
@@ -149,9 +150,12 @@ Two things can prompt, and both can be settled one time:
 jq '.items[] | select(.safety == "safe") | [.name, .sizeBytes]' inventory.json
 ```
 
-The output has `freeBytes`, `purgeableBytes`, `totalBytes` and one record per
-item with `id`, `category`, `name`, `detail`, `sizeBytes`, `safety`,
-`manual` and `path`.
+The output has `totalBytes`, `usedBytes`, `physicalFreeBytes`, optional
+`importantUsageAvailableBytes`, `opportunisticAvailableBytes` and
+`estimatedReclaimableBytes`, plus the measured category estimate and one
+record per item with `id`, `category`, `name`, `detail`, `sizeBytes`, `safety`,
+`manual` and `path`. See [`docs/storage-accounting.md`](docs/storage-accounting.md)
+for the semantics of each metric.
 
 `sysdata` is a bash script covering the Safe categories only, for machines
 where you would rather not run an app:

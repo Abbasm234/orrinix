@@ -4,6 +4,7 @@ import SwiftUI
 struct SafariStorageCard: View {
     let model: SafariStorageModel
     let openFullDiskAccess: () -> Void
+    let onGlobalCleanupFinished: () -> Void
 
     @State private var pendingCleanup: SafariCleanupMode?
     @State private var showsAdvancedDetails = false
@@ -22,7 +23,12 @@ struct SafariStorageCard: View {
                     showsAdvancedDetails: $showsAdvancedDetails,
                     onRescan: { Task { await model.scan() } },
                     onOpenFullDiskAccess: openFullDiskAccess,
-                    onClean: { mode in Task { await model.clean(mode) } }
+                    onClean: { mode in
+                        Task {
+                            await model.clean(mode)
+                            onGlobalCleanupFinished()
+                        }
+                    }
                 )
             } else {
                 Button {
@@ -188,8 +194,9 @@ private struct SafariCleanupResultView: View {
                 .foregroundStyle(.green)
             SafariMetricRow(label: L("Before"), bytes: result.before.totalBytes)
             SafariMetricRow(label: L("After"), bytes: result.after.totalBytes)
-            SafariMetricRow(label: L("Recovered"), bytes: result.recoveredBytes, emphasized: true)
-            SafariMetricRow(label: L("Free on disk"), bytes: result.freeAfter)
+            SafariMetricRow(label: L("Files removed"), bytes: result.recoveredBytes)
+            SafariMetricRow(label: L("Physical space recovered"), bytes: result.recoveredPhysicalBytes, emphasized: true)
+            SafariMetricRow(label: L("Physical free after"), bytes: result.physicalFreeAfter)
         }
         .padding(7)
         .background(.green.opacity(0.1), in: .rect(cornerRadius: 7))

@@ -43,18 +43,16 @@ struct OrrinixApp: App {
         .menuBarExtraStyle(.window)
     }
 
-    /// Drive glyph plus the size of known storage locations found by Orrinix.
-    /// macOS Storage uses its own categories and updates them asynchronously,
-    /// so this intentionally is not presented as its exact System Data total.
+    /// The menu bar and dashboard both read the same volume-level metric.
     private var menuBarLabel: some View {
         HStack(spacing: 3) {
             Image(systemName: "internaldrive")
-            if model.measuredBytes >= 100 * ProbeSupport.megabyte {
-                Text(model.measuredBytes.byteString)
-                    .monospacedDigit()
-            }
+            Text(model.storageMetrics.physicalFreeBytes.byteString)
+                .monospacedDigit()
         }
-        .help(L("System Data found: %@", model.measuredBytes.byteString))
+        .help(L("Free now: %@ · Potentially reclaimable: %@",
+                model.storageMetrics.physicalFreeBytes.byteString,
+                model.storageMetrics.estimatedReclaimableBytes?.byteString ?? L("Unavailable")))
     }
 
     private enum HeadlessMode {

@@ -2,34 +2,33 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "Free now": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş"}}}},
+    "Free now: %@ · Potentially reclaimable: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş: %@ · Geri kazanılabilir: %@"}}}},
+    "Estimated System Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri"}}}},
+    "Estimated System Data: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri: %@"}}}},
+    "System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sistem Verileri bir tahmindir. macOS, üçüncü taraf ölçümlerinden farklı olabilecek özel depolama kategorileri ve APFS muhasebesi kullanır."}}}},
+    "Potentially reclaimable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geri kazanılabilir"}}}},
+    "Potential available": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Potansiyel kullanılabilir"}}}},
+    "Storage Diagnostics": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama tanılama"}}}},
+    "Mount": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bağlama noktası"}}}},
+    "Total": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Toplam"}}}},
+    "Used": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılan"}}}},
+    "Physical free": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Fiziksel boş"}}}},
+    "Available for Important Usage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önemli kullanım için kullanılabilir"}}}},
+    "Available for Opportunistic Usage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Fırsatçı kullanım için kullanılabilir"}}}},
+    "Filesystem": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Dosya sistemi"}}}},
+    "Volume": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Birim"}}}},
+    "Unavailable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılamıyor"}}}},
+    "Physical free after": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sonrasında fiziksel boş"}}}},
+    "Files removed": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kaldırılan dosyalar"}}}},
+    "Physical space recovered": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kazanılan fiziksel alan"}}}},
     "Storage overview": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama özeti"}}}},
     "On this Mac": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Mac’te"}}}},
-    "available": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "kullanılabilir"}}}},
     "Measured locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ölçülen konumlar"}}}},
     "Safe to reclaim": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenle temizlenebilir"}}}},
     "Reclaimed this session": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu oturumda kazanılan"}}}},
     "No matching locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Eşleşen konum yok"}}}},
     "Allow Orrinix to measure protected storage. Reopen the app after granting access.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix’in korumalı depolamayı ölçmesine izin verin. Erişim verdikten sonra uygulamayı yeniden açın."}}}},
-    "%@ free on disk": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "diskte %@ boş"
-          }
-        }
-      }
-    },
-    "%@ safe to free now · %@ free on disk · %@ purgeable": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ güvenle boşaltılabilir · diskte %@ boş · %@ temizlenebilir"
-          }
-        }
-      }
-    },
     "%lld hidden": {
       "localizations": {
         "tr": {
@@ -636,26 +635,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sistem"
-          }
-        }
-      }
-    },
-    "System Data": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sistem Verileri"
-          }
-        }
-      }
-    },
-    "System Data found: %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bulunan Sistem Verileri: %@"
           }
         }
       }

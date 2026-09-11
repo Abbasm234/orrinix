@@ -54,15 +54,29 @@ enum JSONInventory {
     static func write(to output: FileHandle) async {
         let items = await ProbeRegistry.inventory()
             .sorted { ($0.sizeBytes ?? 0) > ($1.sizeBytes ?? 0) }
+        let storage = DiskSize.metrics()
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        let payload: [String: Any] = [
+        var payload: [String: Any] = [
             "generatedAt": ISO8601DateFormatter().string(from: .now),
-            "freeBytes": DiskSize.freeSpace(),
-            "purgeableBytes": DiskSize.purgeableSpace(),
-            "totalBytes": items.reduce(0) { $0 + ($1.sizeBytes ?? 0) },
+            "totalBytes": storage.totalBytes,
+            "usedBytes": storage.usedBytes,
+            "physicalFreeBytes": storage.physicalFreeBytes,
+            "measuredCategoryBytes": items.reduce(0) { $0 + ($1.sizeBytes ?? 0) },
+            "mountPoint": storage.mountPoint.path,
             "items": (try? JSONSerialization.jsonObject(with: encoder.encode(items.map(InventoryRecord.init)))) ?? [],
         ]
+        if let filesystem = storage.filesystemType { payload["filesystemType"] = filesystem }
+        if let volume = storage.volumeName { payload["volumeName"] = volume }
+        if let important = storage.importantUsageAvailableBytes {
+            payload["importantUsageAvailableBytes"] = important
+        }
+        if let opportunistic = storage.opportunisticAvailableBytes {
+            payload["opportunisticAvailableBytes"] = opportunistic
+        }
+        if let reclaimable = storage.estimatedReclaimableBytes {
+            payload["estimatedReclaimableBytes"] = reclaimable
+        }
         if let data = try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]) {
             output.write(data)
             output.write(Data("\n".utf8))

@@ -11,7 +11,7 @@ final class ScanModel {
     /// Safari is deliberately handled by a dedicated cleaner instead of the
     /// generic folder scanner, which must never offer to remove its container.
     private(set) var safari = SafariStorageModel()
-    private(set) var freeBytes: Int64 = DiskSize.freeSpace()
+    private(set) var storageMetrics: StorageMetrics = DiskSize.metrics()
     private(set) var reclaimedBytes: Int64 = 0
     private(set) var busyItemIDs: Set<String> = []
     /// Short description of what the scan is doing right now.
@@ -21,7 +21,6 @@ final class ScanModel {
     var shutsDownSimulatorsAtPowerOff = PowerOffGuard.isEnabled {
         didSet { PowerOffGuard.isEnabled = shutsDownSimulatorsAtPowerOff }
     }
-    private(set) var purgeableBytes: Int64 = DiskSize.purgeableSpace()
     private(set) var lastScan: Date?
     /// Items the user chose not to see again. Persisted; ids are path-based.
     private(set) var hiddenIDs: Set<String>
@@ -39,6 +38,7 @@ final class ScanModel {
         hiddenIDs = Set(UserDefaults.standard.stringArray(forKey: Self.hiddenKey) ?? [])
         if scansAutomatically {
             Task { await runBackgroundScans() }
+            Task { await refreshStoragePeriodically() }
         }
     }
 
@@ -49,6 +49,18 @@ final class ScanModel {
             await scan()
             try? await Task.sleep(for: Self.rescanInterval)
         }
+    }
+
+    private func refreshStoragePeriodically() async {
+        while !Task.isCancelled {
+            refreshStorageMetrics()
+            try? await Task.sleep(for: .seconds(30))
+        }
+    }
+
+    /// Volume accounting is cheap and independent of the deep category scan.
+    func refreshStorageMetrics() {
+        storageMetrics = DiskSize.metrics()
     }
 
     var visibleItems: [StorageItem] {
@@ -145,6 +157,7 @@ final class ScanModel {
         errorMessage = nil
         selectedIDs = []
         refreshAccess()
+        refreshStorageMetrics()
         phase = L("Measuring known locations…")
         Task { await safari.scan() }
         defer {
@@ -164,14 +177,14 @@ final class ScanModel {
         }
 
         items = results
-        freeBytes = DiskSize.freeSpace()
-        purgeableBytes = DiskSize.purgeableSpace()
+        refreshStorageMetrics()
 
         // The catch-all pass needs to know what is already explained, so it
         // runs after everything else and streams in as a second update.
         phase = L("Looking for anything else over 500 MB…")
         let claimed = results.flatMap(\.claimedURLs)
         items += await LargeFolderProbe(claimed: claimed).probe()
+        refreshStorageMetrics()
         lastScan = .now
     }
 
@@ -222,18 +235,17 @@ final class ScanModel {
         // Review items go to the Trash so a wrong click can be undone; Safe
         // items regenerate anyway and are deleted outright.
         let toTrash = affected.allSatisfy { $0.safety == .review }
-        let before = DiskSize.freeSpace()
+        let before = DiskSize.metrics().physicalFreeBytes
         do {
             try await Reclaimer.perform(action, preferTrash: toTrash)
             items.removeAll { ids.contains($0.id) }
-            let after = DiskSize.freeSpace()
+            let after = DiskSize.metrics().physicalFreeBytes
             // A Review cleanup moves data to the Trash. That is deliberately
             // reversible, but macOS does not release the bytes until the Trash
             // is emptied. Report only storage the filesystem has actually
             // released, rather than the estimate from the scan.
             reclaimedBytes += max(after - before, 0)
-            freeBytes = after
-            purgeableBytes = DiskSize.purgeableSpace()
+            refreshStorageMetrics()
             if toTrash, case .removePaths = action {
                 notice = L("Moved to the Trash. Empty the Trash to free the space.")
             }

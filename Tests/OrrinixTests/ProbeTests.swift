@@ -7,6 +7,33 @@ import Testing
 @Suite struct ProbeTests {
     private let probes: [(String, any StorageProbe)] = ProbeRegistry.all.map { (String(describing: type(of: $0)), $0) }
 
+    @Test func storageMetricsKeepReclaimableCapacityOutOfFree() {
+        let metrics = StorageMetrics(
+            totalBytes: 494_380_000_000,
+            physicalFreeBytes: 152_130_000_000,
+            importantUsageAvailableBytes: 183_460_000_000
+        )
+
+        #expect(metrics.physicalFreeBytes == 152_130_000_000)
+        #expect(metrics.usedBytes == 342_250_000_000)
+        #expect(metrics.estimatedReclaimableBytes == 31_330_000_000)
+        #expect(metrics.potentialAvailableBytes == 183_460_000_000)
+        #expect(metrics.physicalFreeBytes != metrics.potentialAvailableBytes)
+    }
+
+    @Test func liveStorageMetricsAreMathematicallyConsistent() {
+        let metrics = DiskSize.metrics()
+        #expect(metrics.totalBytes > 0)
+        #expect(metrics.physicalFreeBytes >= 0)
+        #expect(metrics.physicalFreeBytes <= metrics.totalBytes)
+        #expect(metrics.usedBytes == metrics.totalBytes - metrics.physicalFreeBytes)
+        #expect(metrics.usedBytes >= 0)
+        if let potential = metrics.potentialAvailableBytes {
+            #expect(potential >= metrics.physicalFreeBytes)
+            #expect(potential <= metrics.totalBytes)
+        }
+    }
+
     @Test func itemsAreWellFormed() async {
         var seen: Set<String> = []
         var all: [StorageItem] = []
@@ -146,5 +173,9 @@ import Testing
         let items = try #require(payload["items"] as? [[String: Any]])
         #expect(!items.isEmpty)
         #expect(items.allSatisfy { $0["id"] is String && $0["category"] is String && $0["safety"] is String })
+        #expect(payload["totalBytes"] is NSNumber)
+        #expect(payload["usedBytes"] is NSNumber)
+        #expect(payload["physicalFreeBytes"] is NSNumber)
+        #expect(payload["freeBytes"] == nil)
     }
 }

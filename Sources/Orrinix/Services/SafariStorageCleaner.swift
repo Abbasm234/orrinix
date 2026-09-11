@@ -99,10 +99,11 @@ struct SafariCleanupResult: Equatable, Sendable {
     let mode: SafariCleanupMode
     let before: SafariStorageReport
     let after: SafariStorageReport
-    let freeBefore: Int64
-    let freeAfter: Int64
+    let physicalFreeBefore: Int64
+    let physicalFreeAfter: Int64
 
     var recoveredBytes: Int64 { max(before.totalBytes - after.totalBytes, 0) }
+    var recoveredPhysicalBytes: Int64 { max(physicalFreeAfter - physicalFreeBefore, 0) }
 }
 
 struct SafariCleanupHistoryRecord: Codable, Identifiable, Equatable, Sendable {
@@ -148,14 +149,15 @@ enum SafariStorageCleaner {
         if requiresSafariToBeClosed, isSafariRunning {
             throw SafariCleanerError.safariStillRunning
         }
-        let freeBefore = DiskSize.freeSpace()
+        let physicalFreeBefore = DiskSize.metrics().physicalFreeBytes
         try await Task.detached(priority: .utility) {
             try remove(mode, paths: paths)
         }.value
         let after = await scan(paths: paths)
         return SafariCleanupResult(
             mode: mode, before: before, after: after,
-            freeBefore: freeBefore, freeAfter: DiskSize.freeSpace()
+            physicalFreeBefore: physicalFreeBefore,
+            physicalFreeAfter: DiskSize.metrics().physicalFreeBytes
         )
     }
 
