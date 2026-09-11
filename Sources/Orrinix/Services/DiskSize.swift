@@ -34,7 +34,7 @@ struct StorageMetrics: Equatable, Sendable {
         usedBytes = total - free
         self.importantUsageAvailableBytes = important
         self.opportunisticAvailableBytes = opportunistic
-        estimatedReclaimableBytes = important.map { max($0 - free, 0) }
+        estimatedReclaimableBytes = (important ?? opportunistic).map { max($0 - free, 0) }
         self.mountPoint = mountPoint
         self.filesystemType = filesystemType
         self.volumeName = volumeName
