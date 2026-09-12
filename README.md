@@ -40,8 +40,9 @@ native Liquid Glass on macOS 26 and later, with a material fallback on macOS
 
 Build from source (Xcode 26 or later):
 
-The screenshots show the latest source UI. The downloadable `v1.0.1` release
-predates this redesign. Use Xcode 26 or later to build the new Liquid Glass UI.
+The downloadable `v1.0.2` release includes this redesign and the latest
+storage-accounting and SIP-safe cleanup fixes. Use Xcode 26 or later to build
+from source.
 
 ```bash
 git clone https://github.com/Abbasm234/orrinix.git
