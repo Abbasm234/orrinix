@@ -4,6 +4,7 @@
 "%@ measured · %@ safe to remove" = "%@ measured · %@ safe to remove";
 "%@ moved to the Trash." = "%@ moved to the Trash.";
 "%@ safe to remove" = "%@ safe to remove";
+"%@ used" = "%@ used";
 "%@ used of %@" = "%@ used of %@";
 "%@ will quit if it is running. Everything ticked goes to the Trash, so it can be put back until you empty it." = "%@ will quit if it is running. Everything ticked goes to the Trash, so it can be put back until you empty it.";
 "%@, %@" = "%@, %@";
@@ -12,6 +13,7 @@
 "%lld items" = "%lld items";
 "%lld items need root; the password is asked once." = "%lld items need root; the password is asked once.";
 "%lld leftovers found" = "%lld leftovers found";
+"%lld locations measured" = "%lld locations measured";
 "%lld marked Review go to the Trash: %@" = "%lld marked Review go to the Trash: %@";
 "%lld selected · %@" = "%lld selected · %@";
 "1 item" = "1 item";
@@ -25,11 +27,14 @@
 "Age" = "Age";
 "All" = "All";
 "All kinds" = "All kinds";
+"All tidy" = "All tidy";
+"All tidy here" = "All tidy here";
 "Allow Orrinix to measure protected storage. Reopen the app after granting access." = "Allow Orrinix to measure protected storage. Reopen the app after granting access.";
 "Android" = "Android";
 "Any age" = "Any age";
 "App data" = "App data";
 "App data & caches" = "App data & caches";
+"Apps" = "Apps";
 "Apps & Browsers" = "Apps & Browsers";
 "Archives" = "Archives";
 "Available for Important Usage" = "Available for Important Usage";
@@ -51,6 +56,7 @@
 "Clean Safari Website Data" = "Clean Safari Website Data";
 "Clean This Website Only" = "Clean This Website Only";
 "Clean Up" = "Clean Up";
+"Cleaning…" = "Cleaning…";
 "Clear" = "Clear";
 "Clear Safari Cache" = "Clear Safari Cache";
 "Clear filter" = "Clear filter";
@@ -59,6 +65,7 @@
 "Collapse All" = "Collapse All";
 "Cookies" = "Cookies";
 "Copy" = "Copy";
+"Copy Path" = "Copy Path";
 "Critical" = "Critical";
 "Delete" = "Delete";
 "Delete %@" = "Delete %@";
@@ -67,6 +74,9 @@
 "Delete %lld items?" = "Delete %lld items?";
 "Delete %lld selected · %@" = "Delete %lld selected · %@";
 "Delete Selected" = "Delete Selected";
+"Delete…" = "Delete…";
+"Deselect" = "Deselect";
+"Developer" = "Developer";
 "Developer Tools" = "Developer Tools";
 "Developer tool data" = "Developer tool data";
 "Disk images" = "Disk images";
@@ -87,9 +97,12 @@
 "Free" = "Free";
 "Free now" = "Free now";
 "Free now: %@ · Potentially reclaimable: %@" = "Free now: %@ · Potentially reclaimable: %@";
+"Free up %@ safely" = "Free up %@ safely";
 "Frees about %@. " = "Frees about %@. ";
 "Full Disk Access" = "Full Disk Access";
+"Full Disk Access is off, so some folders can't be measured." = "Full Disk Access is off, so some folders can't be measured.";
 "General" = "General";
+"Grant" = "Grant";
 "Grant Full Disk Access once" = "Grant Full Disk Access once";
 "Granted" = "Granted";
 "Hidden Items" = "Hidden Items";
@@ -136,6 +149,7 @@
 "Name match" = "Name match";
 "Name matches are left unticked; check them before removing." = "Name matches are left unticked; check them before removing.";
 "Needed to measure Safari, Mail and other protected folders." = "Needed to measure Safari, Mail and other protected folders.";
+"Needs access" = "Needs access";
 "No files match these filters." = "No files match these filters.";
 "No hidden items. Use the eye button on any row to hide it from future scans." = "No hidden items. Use the eye button on any row to hide it from future scans.";
 "No leftovers from removed apps." = "No leftovers from removed apps.";
@@ -172,6 +186,7 @@
 "Rescan" = "Rescan";
 "Rescan Safari Storage" = "Rescan Safari Storage";
 "Reveal %@ in Finder" = "Reveal %@ in Finder";
+"Reveal in Finder" = "Reveal in Finder";
 "Review" = "Review";
 "Runaway" = "Runaway";
 "Safari" = "Safari";
@@ -192,10 +207,12 @@
 "Scan" = "Scan";
 "Scan Safari Storage" = "Scan Safari Storage";
 "Scan to find large files." = "Scan to find large files.";
+"Scanned %@" = "Scanned %@";
 "Scanning" = "Scanning";
 "Scanning Safari…" = "Scanning Safari…";
 "Scripts" = "Scripts";
 "Search apps" = "Search apps";
+"Select" = "Select";
 "Select %@" = "Select %@";
 "Select Safe in This Section" = "Select Safe in This Section";
 "Select every item that is regenerated automatically" = "Select every item that is regenerated automatically";
@@ -209,6 +226,7 @@
 "Show All" = "Show All";
 "Show all" = "Show all";
 "Show largest entries" = "Show largest entries";
+"Show only this section" = "Show only this section";
 "Shut down simulators at power off" = "Shut down simulators at power off";
 "Simulator devices" = "Simulator devices";
 "Simulator runtimes" = "Simulator runtimes";
@@ -258,6 +276,7 @@
 "Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app." = "Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app.";
 "Xcode" = "Xcode";
 "Xcode & Simulators" = "Xcode & Simulators";
+"free" = "free";
 "free of %@" = "free of %@";
 "iOS device backups" = "iOS device backups";
 "macOS frees purgeable space on its own when it needs room." = "macOS frees purgeable space on its own when it needs room.";

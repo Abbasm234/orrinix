@@ -4,6 +4,7 @@
 "%@ measured · %@ safe to remove" = "%@ ölçüldü · %@ güvenle silinebilir";
 "%@ moved to the Trash." = "%@ Çöp Sepeti'ne taşındı.";
 "%@ safe to remove" = "%@ güvenle silinebilir";
+"%@ used" = "%@ dolu";
 "%@ used of %@" = "%@ / %@ kullanımda";
 "%@ will quit if it is running. Everything ticked goes to the Trash, so it can be put back until you empty it." = "%@ çalışıyorsa kapatılır. İşaretlenen her şey Çöp Sepeti'ne gider; boşaltana kadar geri alabilirsiniz.";
 "%@, %@" = "%@, %@";
@@ -12,6 +13,7 @@
 "%lld items" = "%lld kalem";
 "%lld items need root; the password is asked once." = "%lld kalem yönetici yetkisi istiyor; parola bir kez sorulur.";
 "%lld leftovers found" = "%lld artık bulundu";
+"%lld locations measured" = "%lld konum ölçüldü";
 "%lld marked Review go to the Trash: %@" = "%lld tanesi İncele işaretli, Çöp Sepeti'ne gider: %@";
 "%lld selected · %@" = "%lld seçili · %@";
 "1 item" = "1 kalem";
@@ -25,11 +27,14 @@
 "Age" = "Yaş";
 "All" = "Tümü";
 "All kinds" = "Tüm türler";
+"All tidy" = "Her şey derli toplu";
+"All tidy here" = "Burada her şey derli toplu";
 "Allow Orrinix to measure protected storage. Reopen the app after granting access." = "Orrinix’in korumalı depolamayı ölçmesine izin verin. Erişim verdikten sonra uygulamayı yeniden açın.";
 "Android" = "Android";
 "Any age" = "Her yaş";
 "App data" = "Uygulama verisi";
 "App data & caches" = "Uygulama verileri ve önbellekler";
+"Apps" = "Uygulamalar";
 "Apps & Browsers" = "Uygulamalar ve Tarayıcılar";
 "Archives" = "Arşivler";
 "Available for Important Usage" = "Önemli kullanım için kullanılabilir";
@@ -51,6 +56,7 @@
 "Clean Safari Website Data" = "Safari Web Sitesi Verilerini Temizle";
 "Clean This Website Only" = "Yalnızca Bu Web Sitesini Temizle";
 "Clean Up" = "Temizlik";
+"Cleaning…" = "Temizleniyor…";
 "Clear" = "Temizle";
 "Clear Safari Cache" = "Safari Önbelleğini Temizle";
 "Clear filter" = "Filtreyi temizle";
@@ -59,6 +65,7 @@
 "Collapse All" = "Tümünü Daralt";
 "Cookies" = "Çerezler";
 "Copy" = "Kopyala";
+"Copy Path" = "Yolu Kopyala";
 "Critical" = "Kritik";
 "Delete" = "Sil";
 "Delete %@" = "%@ öğesini sil";
@@ -67,6 +74,9 @@
 "Delete %lld items?" = "%lld kalem silinsin mi?";
 "Delete %lld selected · %@" = "Seçili %lld kalemi sil · %@";
 "Delete Selected" = "Seçilenleri Sil";
+"Delete…" = "Sil…";
+"Deselect" = "Seçimi Kaldır";
+"Developer" = "Geliştirici";
 "Developer Tools" = "Geliştirici Araçları";
 "Developer tool data" = "Geliştirici araç verileri";
 "Disk images" = "Disk görüntüleri";
@@ -87,9 +97,12 @@
 "Free" = "Boş";
 "Free now" = "Şimdi boş";
 "Free now: %@ · Potentially reclaimable: %@" = "Şimdi boş: %@ · Geri kazanılabilir: %@";
+"Free up %@ safely" = "%@ alanı güvenle boşalt";
 "Frees about %@. " = "Yaklaşık %@ boşaltır. ";
 "Full Disk Access" = "Tam Disk Erişimi";
+"Full Disk Access is off, so some folders can't be measured." = "Tam Disk Erişimi kapalı, bu yüzden bazı klasörler ölçülemiyor.";
 "General" = "Genel";
+"Grant" = "İzin Ver";
 "Grant Full Disk Access once" = "Tam Disk Erişimi'ni bir kez verin";
 "Granted" = "Verildi";
 "Hidden Items" = "Gizli Kalemler";
@@ -136,6 +149,7 @@
 "Name match" = "Ad eşleşmesi";
 "Name matches are left unticked; check them before removing." = "Ad eşleşmeleri işaretsiz bırakılır; silmeden önce kontrol edin.";
 "Needed to measure Safari, Mail and other protected folders." = "Safari, Mail ve diğer korumalı klasörleri ölçmek için gerekir.";
+"Needs access" = "Erişim gerekli";
 "No files match these filters." = "Bu filtrelere uyan dosya yok.";
 "No hidden items. Use the eye button on any row to hide it from future scans." = "Gizli kalem yok. Bir satırı sonraki taramalarda gizlemek için göz düğmesini kullanın.";
 "No leftovers from removed apps." = "Silinen uygulamalardan artık yok.";
@@ -172,6 +186,7 @@
 "Rescan" = "Yeniden tara";
 "Rescan Safari Storage" = "Safari Depolamasını Yeniden Tara";
 "Reveal %@ in Finder" = "%@ öğesini Finder'da göster";
+"Reveal in Finder" = "Finder'da Göster";
 "Review" = "İncele";
 "Runaway" = "Kontrolden çıkmış";
 "Safari" = "Safari";
@@ -192,10 +207,12 @@
 "Scan" = "Tara";
 "Scan Safari Storage" = "Safari Depolamasını Tara";
 "Scan to find large files." = "Büyük dosyaları bulmak için tarayın.";
+"Scanned %@" = "Tarandı: %@";
 "Scanning" = "Taranıyor";
 "Scanning Safari…" = "Safari taranıyor…";
 "Scripts" = "Betikler";
 "Search apps" = "Uygulama ara";
+"Select" = "Seç";
 "Select %@" = "%@ öğesini seç";
 "Select Safe in This Section" = "Bu Bölümdeki Güvenli Kalemleri Seç";
 "Select every item that is regenerated automatically" = "Kendiliğinden yeniden oluşan her kalemi seç";
@@ -209,6 +226,7 @@
 "Show All" = "Tümünü Göster";
 "Show all" = "Tümünü göster";
 "Show largest entries" = "En büyük girdileri göster";
+"Show only this section" = "Yalnızca bu bölümü göster";
 "Shut down simulators at power off" = "Kapanışta simülatörleri kapat";
 "Simulator devices" = "Simülatör aygıtları";
 "Simulator runtimes" = "Simülatör runtime'ları";
@@ -258,6 +276,7 @@
 "Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app." = "Verilmezse macOS her korumalı klasör için ayrı sorar; Mail, Safari ve Time Machine verileri görünmez. Ayarlar bölmesinde System Data'yı ekleyin, sonra uygulamayı yeniden açın.";
 "Xcode" = "Xcode";
 "Xcode & Simulators" = "Xcode ve Simülatörler";
+"free" = "boş";
 "free of %@" = "boş, toplam %@";
 "iOS device backups" = "iOS aygıt yedekleri";
 "macOS frees purgeable space on its own when it needs room." = "macOS yer gerektiğinde temizlenebilir alanı kendisi boşaltır.";
