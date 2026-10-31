@@ -2,722 +2,268 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
-    "Free now": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş"}}}},
-    "Free now: %@ · Potentially reclaimable: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş: %@ · Geri kazanılabilir: %@"}}}},
-    "Estimated System Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri"}}}},
-    "Estimated System Data: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri: %@"}}}},
-    "System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sistem Verileri bir tahmindir. macOS, üçüncü taraf ölçümlerinden farklı olabilecek özel depolama kategorileri ve APFS muhasebesi kullanır."}}}},
-    "Potentially reclaimable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geri kazanılabilir"}}}},
-    "Potential available": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Potansiyel kullanılabilir"}}}},
-    "Storage Diagnostics": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama tanılama"}}}},
-    "Mount": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bağlama noktası"}}}},
-    "Total": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Toplam"}}}},
-    "Used": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılan"}}}},
-    "Physical free": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Fiziksel boş"}}}},
+    "%@ LocalStorage detected": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ LocalStorage algılandı"}}}},
+    "%@ free of %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ boş, toplam %@"}}}},
+    "%@ in total. Empty the Trash to free the space.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Toplam %@. Alanı boşaltmak için Çöp Sepeti'ni boşaltın."}}}},
+    "%@ measured · %@ safe to remove": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ ölçüldü · %@ güvenle silinebilir"}}}},
+    "%@ moved to the Trash.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ Çöp Sepeti'ne taşındı."}}}},
+    "%@ safe to remove": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ güvenle silinebilir"}}}},
+    "%@ used of %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ / %@ kullanımda"}}}},
+    "%@ will quit if it is running. Everything ticked goes to the Trash, so it can be put back until you empty it.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ çalışıyorsa kapatılır. İşaretlenen her şey Çöp Sepeti'ne gider; boşaltana kadar geri alabilirsiniz."}}}},
+    "%@, %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@, %@"}}}},
+    "%lld files · %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld dosya · %@"}}}},
+    "%lld hidden": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld gizli"}}}},
+    "%lld items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld kalem"}}}},
+    "%lld items need root; the password is asked once.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld kalem yönetici yetkisi istiyor; parola bir kez sorulur."}}}},
+    "%lld leftovers found": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld artık bulundu"}}}},
+    "%lld marked Review go to the Trash: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld tanesi İncele işaretli, Çöp Sepeti'ne gider: %@"}}}},
+    "%lld selected · %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld seçili · %@"}}}},
+    "1 item": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "1 kalem"}}}},
+    "1 item needs root; the password is asked once.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "1 kalem yönetici yetkisi istiyor; parola bir kez sorulur."}}}},
+    "About": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Hakkında"}}}},
+    "Access": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Erişim"}}}},
+    "Add": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ekle"}}}},
+    "Add Folder…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Klasör Ekle…"}}}},
+    "Advanced Details": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Gelişmiş Ayrıntılar"}}}},
+    "After": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sonra"}}}},
+    "Age": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yaş"}}}},
+    "All": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tümü"}}}},
+    "All kinds": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tüm türler"}}}},
+    "Allow Orrinix to measure protected storage. Reopen the app after granting access.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix’in korumalı depolamayı ölçmesine izin verin. Erişim verdikten sonra uygulamayı yeniden açın."}}}},
+    "Android": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Android"}}}},
+    "Any age": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Her yaş"}}}},
+    "App data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulama verisi"}}}},
+    "App data & caches": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulama verileri ve önbellekler"}}}},
+    "Apps & Browsers": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulamalar ve Tarayıcılar"}}}},
+    "Archives": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Arşivler"}}}},
     "Available for Important Usage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önemli kullanım için kullanılabilir"}}}},
     "Available for Opportunistic Usage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Fırsatçı kullanım için kullanılabilir"}}}},
-    "Filesystem": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Dosya sistemi"}}}},
-    "Volume": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Birim"}}}},
-    "Unavailable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılamıyor"}}}},
-    "Physical free after": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sonrasında fiziksel boş"}}}},
+    "Background service": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Arka plan hizmeti"}}}},
+    "Before": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önce"}}}},
+    "Big files in your folders, with how long since you last opened them.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Klasörlerinizdeki büyük dosyalar ve en son ne zaman açıldıkları."}}}},
+    "Booted simulators ignore the quit request and hold the shutdown for 33 seconds. This shuts them down first.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Açık simülatörler çıkış isteğini yok sayar ve kapanışı 33 saniye bekletir. Bu seçenek önce onları kapatır."}}}},
+    "Browsers": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tarayıcılar"}}}},
+    "Cache": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önbellek"}}}},
+    "Caches": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önbellekler"}}}},
+    "Cancel": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Vazgeç"}}}},
+    "Chat & meeting apps": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sohbet ve toplantı uygulamaları"}}}},
+    "Checking app data against installed apps…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulama verileri yüklü uygulamalarla karşılaştırılıyor…"}}}},
+    "Choose an app to see everything it installed.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yüklediği her şeyi görmek için bir uygulama seçin."}}}},
+    "Clean All Safe Items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tüm Güvenli Kalemleri Temizle"}}}},
+    "Clean Recommended Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önerilen Verileri Temizle"}}}},
+    "Clean Safari": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari'yi Temizle"}}}},
+    "Clean Safari Website Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Web Sitesi Verilerini Temizle"}}}},
+    "Clean This Website Only": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yalnızca Bu Web Sitesini Temizle"}}}},
+    "Clean Up": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Temizlik"}}}},
+    "Clear": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Temizle"}}}},
+    "Clear Safari Cache": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Önbelleğini Temizle"}}}},
+    "Clear filter": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Filtreyi temizle"}}}},
+    "Code editors & IDEs": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kod düzenleyiciler ve IDE'ler"}}}},
+    "Collapse": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Daralt"}}}},
+    "Collapse All": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tümünü Daralt"}}}},
+    "Cookies": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çerezler"}}}},
+    "Copy": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kopyala"}}}},
+    "Critical": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kritik"}}}},
+    "Delete": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sil"}}}},
+    "Delete %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ öğesini sil"}}}},
+    "Delete %@?": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ silinsin mi?"}}}},
+    "Delete %lld items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld kalemi sil"}}}},
+    "Delete %lld items?": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld kalem silinsin mi?"}}}},
+    "Delete %lld selected · %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Seçili %lld kalemi sil · %@"}}}},
+    "Delete Selected": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Seçilenleri Sil"}}}},
+    "Developer Tools": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geliştirici Araçları"}}}},
+    "Developer tool data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geliştirici araç verileri"}}}},
+    "Disk images": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Disk görüntüleri"}}}},
+    "Dismiss": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kapat"}}}},
+    "Docker": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Docker"}}}},
+    "Don't show this item again": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu kalemi bir daha gösterme"}}}},
+    "Empty folder": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Boş klasör"}}}},
+    "Estimated System Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri"}}}},
+    "Estimated System Data: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tahmini Sistem Verileri: %@"}}}},
+    "Everything else": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Diğer her şey"}}}},
+    "Expand": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Genişlet"}}}},
+    "Expand All": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tümünü Genişlet"}}}},
     "Files removed": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kaldırılan dosyalar"}}}},
-    "Physical space recovered": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kazanılan fiziksel alan"}}}},
-    "Storage overview": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama özeti"}}}},
-    "On this Mac": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Mac’te"}}}},
+    "Filesystem": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Dosya sistemi"}}}},
+    "Filter items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Öğeleri filtrele"}}}},
+    "Find big, forgotten files": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Büyük, unutulmuş dosyaları bul"}}}},
+    "Folders named after apps that are no longer installed. Apps on external drives can look removed.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Artık yüklü olmayan uygulamaların adını taşıyan klasörler. Harici disklerdeki uygulamalar silinmiş gibi görünebilir."}}}},
+    "Free": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Boş"}}}},
+    "Free now": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş"}}}},
+    "Free now: %@ · Potentially reclaimable: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Şimdi boş: %@ · Geri kazanılabilir: %@"}}}},
+    "Frees about %@. ": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yaklaşık %@ boşaltır. "}}}},
+    "Full Disk Access": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tam Disk Erişimi"}}}},
+    "General": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Genel"}}}},
+    "Grant Full Disk Access once": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tam Disk Erişimi'ni bir kez verin"}}}},
+    "Granted": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Verildi"}}}},
+    "Hidden Items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Gizli Kalemler"}}}},
+    "Hide %@ from future scans": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ öğesini sonraki taramalarda gizle"}}}},
+    "Hide breakdown": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kırılımı gizle"}}}},
+    "How Orrinix runs, and what it has been told to ignore.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix'in nasıl çalıştığı ve neyi yok sayacağı."}}}},
+    "How to remove %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ nasıl kaldırılır"}}}},
+    "Installed Apps": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yüklü Uygulamalar"}}}},
+    "Installers": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yükleyiciler"}}}},
+    "It goes to the Trash first.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önce Çöp Sepeti'ne gider."}}}},
+    "Kind": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tür"}}}},
+    "Large Files": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Büyük Dosyalar"}}}},
+    "Largest Safari Files": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En Büyük Safari Dosyaları"}}}},
+    "Largest items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En büyük kalemler"}}}},
+    "Largest website origin: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En büyük web sitesi kaynağı: %@"}}}},
+    "Last opened %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Son açılış %@"}}}},
+    "Last scan": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Son tarama"}}}},
+    "Last scanned %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Son tarama %@"}}}},
+    "Launch at login": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Girişte başlat"}}}},
+    "Launch at login: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Girişte başlat: %@"}}}},
+    "Leftovers of Removed Apps": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Silinen Uygulamaların Artıkları"}}}},
+    "Login item": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Giriş öğesi"}}}},
+    "Logs": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Günlükler"}}}},
+    "Logs & diagnostics": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Günlükler ve tanılama"}}}},
+    "Looking for anything else over 500 MB…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "500 MB üstü başka ne varsa aranıyor…"}}}},
+    "Looking for leftovers…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Artıklar aranıyor…"}}}},
+    "Looking through your folders…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Klasörleriniz taranıyor…"}}}},
+    "Manage hidden items": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Gizli kalemleri yönet"}}}},
+    "Manual": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Elle"}}}},
     "Measured locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ölçülen konumlar"}}}},
-    "Safe to reclaim": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenle temizlenebilir"}}}},
-    "Reclaimed this session": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu oturumda kazanılan"}}}},
+    "Measuring known locations…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bilinen konumlar ölçülüyor…"}}}},
+    "Measuring the largest entries…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En büyük girdiler ölçülüyor…"}}}},
+    "Measuring…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ölçülüyor…"}}}},
+    "Minimum size": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En küçük boyut"}}}},
+    "Mode": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Mod"}}}},
+    "More options": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Diğer seçenekler"}}}},
+    "Mount": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bağlama noktası"}}}},
+    "Move %lld files to the Trash?": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld dosya Çöp Sepeti'ne taşınsın mı?"}}}},
+    "Move %lld folders to the Trash?": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld klasör Çöp Sepeti'ne taşınsın mı?"}}}},
+    "Move %lld to Trash · %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%lld tanesini Çöp Sepeti'ne taşı · %@"}}}},
+    "Move to Trash": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çöp Sepeti'ne Taşı"}}}},
+    "Moved to the Trash. Empty the Trash to free the space.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çöp Sepeti'ne taşındı. Alanı boşaltmak için Çöp Sepeti'ni boşaltın."}}}},
+    "Name": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ad"}}}},
+    "Name match": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ad eşleşmesi"}}}},
+    "Name matches are left unticked; check them before removing.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ad eşleşmeleri işaretsiz bırakılır; silmeden önce kontrol edin."}}}},
+    "Needed to measure Safari, Mail and other protected folders.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari, Mail ve diğer korumalı klasörleri ölçmek için gerekir."}}}},
+    "No files match these filters.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu filtrelere uyan dosya yok."}}}},
+    "No hidden items. Use the eye button on any row to hide it from future scans.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Gizli kalem yok. Bir satırı sonraki taramalarda gizlemek için göz düğmesini kullanın."}}}},
+    "No leftovers from removed apps.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Silinen uygulamalardan artık yok."}}}},
     "No matching locations": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Eşleşen konum yok"}}}},
-    "Allow Orrinix to measure protected storage. Reopen the app after granting access.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix’in korumalı depolamayı ölçmesine izin verin. Erişim verdikten sonra uygulamayı yeniden açın."}}}},
-    "%lld hidden": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld gizli"
-          }
-        }
-      }
-    },
-    "%lld items need root; the password is asked once.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld kalem yönetici yetkisi istiyor; parola bir kez sorulur."
-          }
-        }
-      }
-    },
-    "%lld marked Review go to the Trash: %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld tanesi İncele işaretli, Çöp Sepeti'ne gider: %@"
-          }
-        }
-      }
-    },
-    "1 item needs root; the password is asked once.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 kalem yönetici yetkisi istiyor; parola bir kez sorulur."
-          }
-        }
-      }
-    },
-    "Android": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Android"
-          }
-        }
-      }
-    },
-    "App data & caches": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uygulama verileri ve önbellekler"
-          }
-        }
-      }
-    },
-    "Booted simulators ignore the quit request and hold the shutdown for 33 seconds. This shuts them down first.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Açık simülatörler çıkış isteğini yok sayar ve kapanışı 33 saniye bekletir. Bu seçenek önce onları kapatır."
-          }
-        }
-      }
-    },
-    "Cancel": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vazgeç"
-          }
-        }
-      }
-    },
-    "Clear": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temizle"
-          }
-        }
-      }
-    },
-    "Copy": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kopyala"
-          }
-        }
-      }
-    },
-    "Delete": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sil"
-          }
-        }
-      }
-    },
-    "Delete %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ öğesini sil"
-          }
-        }
-      }
-    },
-    "Delete %@?": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ silinsin mi?"
-          }
-        }
-      }
-    },
-    "Delete %lld items": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld kalemi sil"
-          }
-        }
-      }
-    },
-    "Delete %lld items?": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld kalem silinsin mi?"
-          }
-        }
-      }
-    },
-    "Delete %lld selected · %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seçili %lld kalemi sil · %@"
-          }
-        }
-      }
-    },
-    "Developer tool data": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geliştirici araç verileri"
-          }
-        }
-      }
-    },
-    "Dismiss": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kapat"
-          }
-        }
-      }
-    },
-    "Docker": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Docker"
-          }
-        }
-      }
-    },
-    "Don't show this item again": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu kalemi bir daha gösterme"
-          }
-        }
-      }
-    },
-    "Empty folder": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boş klasör"
-          }
-        }
-      }
-    },
-    "Frees about %@. ": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yaklaşık %@ boşaltır. "
-          }
-        }
-      }
-    },
-    "Filter items": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Öğeleri filtrele"
-          }
-        }
-      }
-    },
-    "Grant Full Disk Access once": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tam Disk Erişimi'ni bir kez verin"
-          }
-        }
-      }
-    },
-    "Hide %@ from future scans": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ öğesini sonraki taramalarda gizle"
-          }
-        }
-      }
-    },
-    "Hide breakdown": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kırılımı gizle"
-          }
-        }
-      }
-    },
-    "How to remove %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ nasıl kaldırılır"
-          }
-        }
-      }
-    },
-    "It goes to the Trash first.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Önce Çöp Sepeti'ne gider."
-          }
-        }
-      }
-    },
-    "Launch at login": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Girişte başlat"
-          }
-        }
-      }
-    },
-    "Launch at login: %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Girişte başlat: %@"
-          }
-        }
-      }
-    },
-    "Logs & diagnostics": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Günlükler ve tanılama"
-          }
-        }
-      }
-    },
-    "Looking for anything else over 500 MB…": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "500 MB üstü başka ne varsa aranıyor…"
-          }
-        }
-      }
-    },
-    "Manual": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elle"
-          }
-        }
-      }
-    },
-    "Measuring known locations…": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bilinen konumlar ölçülüyor…"
-          }
-        }
-      }
-    },
-    "Measuring the largest entries…": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En büyük girdiler ölçülüyor…"
-          }
-        }
-      }
-    },
-    "Measuring…": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ölçülüyor…"
-          }
-        }
-      }
-    },
-    "Moved to the Trash. Empty the Trash to free the space.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Çöp Sepeti'ne taşındı. Alanı boşaltmak için Çöp Sepeti'ni boşaltın."
-          }
-        }
-      }
-    },
-    "Nothing to reclaim": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geri kazanılacak bir şey yok"
-          }
-        }
-      }
-    },
-    "Open Settings": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ayarları Aç"
-          }
-        }
-      }
-    },
-    "Open x.com/yigitech": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "x.com/yigitech adresini aç"
-          }
-        }
-      }
-    },
-    "Other large folders": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Diğer büyük klasörler"
-          }
-        }
-      }
-    },
-    "Package managers": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paket yöneticileri"
-          }
-        }
-      }
-    },
-    "Project build folders": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Proje derleme klasörleri"
-          }
-        }
-      }
-    },
-    "Quit": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Çık"
-          }
-        }
-      }
-    },
-    "Reclaimed this session: %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu oturumda kazanılan: %@"
-          }
-        }
-      }
-    },
-    "Rescan": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yeniden tara"
-          }
-        }
-      }
-    },
-    "Reveal %@ in Finder": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ öğesini Finder'da göster"
-          }
-        }
-      }
-    },
-    "Review": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İncele"
-          }
-        }
-      }
-    },
-    "Safe": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güvenli"
-          }
-        }
-      }
-    },
-    "Safety: %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güvenlik: %@"
-          }
-        }
-      }
-    },
-    "Scanning": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Taranıyor"
-          }
-        }
-      }
-    },
-    "Select %@": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ öğesini seç"
-          }
-        }
-      }
-    },
-    "Select every item that is regenerated automatically": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kendiliğinden yeniden oluşan her kalemi seç"
-          }
-        }
-      }
-    },
-    "Select safe": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güvenlileri seç"
-          }
-        }
-      }
-    },
-    "Shared & other users": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paylaşılan ve diğer kullanıcılar"
-          }
-        }
-      }
-    },
-    "Show all": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tümünü göster"
-          }
-        }
-      }
-    },
-    "Show largest entries": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En büyük girdileri göster"
-          }
-        }
-      }
-    },
-    "Shut down simulators at power off": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kapanışta simülatörleri kapat"
-          }
-        }
-      }
-    },
-    "Simulator devices": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Simülatör aygıtları"
-          }
-        }
-      }
-    },
-    "Simulator runtimes": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Simülatör runtime'ları"
-          }
-        }
-      }
-    },
-    "System": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sistem"
-          }
-        }
-      }
-    },
-    "Temporary files": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geçici dosyalar"
-          }
-        }
-      }
-    },
-    "This is regenerated automatically when needed.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gerektiğinde kendiliğinden yeniden oluşturulur."
-          }
-        }
-      }
-    },
-    "Time Machine snapshots": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Time Machine anlık görüntüleri"
-          }
-        }
-      }
-    },
-    "Trash": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Çöp Sepeti"
-          }
-        }
-      }
-    },
-    "Virtual machines": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sanal makineler"
-          }
-        }
-      }
-    },
-    "Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app.": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verilmezse macOS her korumalı klasör için ayrı sorar; Mail, Safari ve Time Machine verileri görünmez. Ayarlar bölmesinde System Data'yı ekleyin, sonra uygulamayı yeniden açın."
-          }
-        }
-      }
-    },
-    "Xcode": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xcode"
-          }
-        }
-      }
-    },
-    "iOS device backups": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS aygıt yedekleri"
-          }
-        }
-      }
-    }
+    "Nothing safe to remove automatically": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Otomatik olarak güvenle silinebilecek bir şey yok"}}}},
+    "Nothing to reclaim": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geri kazanılacak bir şey yok"}}}},
+    "On this Mac": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Mac’te"}}}},
+    "Open Full Disk Access Settings": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tam Disk Erişimi Ayarlarını Aç"}}}},
+    "Open Orrinix": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix'i Aç"}}}},
+    "Open Settings": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ayarları Aç"}}}},
+    "Open the full window with every tool": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tüm araçların bulunduğu pencereyi aç"}}}},
+    "Open x.com/yigitech": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "x.com/yigitech adresini aç"}}}},
+    "Orrinix refused an unsafe Safari cleanup path.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Orrinix güvenli olmayan bir Safari temizleme yolunu reddetti."}}}},
+    "Other": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Diğer"}}}},
+    "Other large folders": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Diğer büyük klasörler"}}}},
+    "Over %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ üzeri"}}}},
+    "Overview": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Genel Bakış"}}}},
+    "Package managers": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Paket yöneticileri"}}}},
+    "Physical free": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Fiziksel boş"}}}},
+    "Physical free after": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sonrasında fiziksel boş"}}}},
+    "Physical space recovered": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kazanılan fiziksel alan"}}}},
+    "Potential available": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Potansiyel kullanılabilir"}}}},
+    "Potentially reclaimable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geri kazanılabilir"}}}},
+    "Preferences": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tercihler"}}}},
+    "Privileged helper": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yetkili yardımcı"}}}},
+    "Project build folders": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Proje derleme klasörleri"}}}},
+    "Quit": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çık"}}}},
+    "Quit %@ first, then try again.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Önce %@ uygulamasından çıkın, sonra yeniden deneyin."}}}},
+    "Quit Safari & Clean": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari'den Çık ve Temizle"}}}},
+    "Reclaimed this session": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu oturumda kazanılan"}}}},
+    "Reclaimed this session: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu oturumda kazanılan: %@"}}}},
+    "Remove an app together with the files it left around your Mac.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bir uygulamayı Mac'inize bıraktığı dosyalarla birlikte kaldırın."}}}},
+    "Remove apps completely": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulamaları tamamen kaldır"}}}},
+    "Rescan": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Yeniden tara"}}}},
+    "Rescan Safari Storage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Depolamasını Yeniden Tara"}}}},
+    "Reveal %@ in Finder": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ öğesini Finder'da göster"}}}},
+    "Review": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "İncele"}}}},
+    "Runaway": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kontrolden çıkmış"}}}},
+    "Safari": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari"}}}},
+    "Safari Cleaned Successfully": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Başarıyla Temizlendi"}}}},
+    "Safari Storage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Depolaması"}}}},
+    "Safari Storage Cleaner": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Depolama Temizleyici"}}}},
+    "Safari Website Data Cleanup": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Web Sitesi Verisi Temizliği"}}}},
+    "Safari cleanup could not remove %lld item(s).": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari temizliği %lld öğeyi silemedi."}}}},
+    "Safari cleanup options": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari temizleme seçenekleri"}}}},
+    "Safari must be closed before cleaning.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Temizlemeden önce Safari kapatılmalı."}}}},
+    "Safari storage cannot be fully inspected because macOS has restricted access.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "macOS erişimi kısıtladığı için Safari depolaması tam olarak incelenemiyor."}}}},
+    "Safari will quit before cleaning.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari temizlikten önce kapatılacak."}}}},
+    "Safe": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenli"}}}},
+    "Safe to reclaim": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenle temizlenebilir"}}}},
+    "Safety": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenlik"}}}},
+    "Safety: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenlik: %@"}}}},
+    "Sandbox container": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Korumalı alan kapsayıcısı"}}}},
+    "Scan": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tara"}}}},
+    "Scan Safari Storage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari Depolamasını Tara"}}}},
+    "Scan to find large files.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Büyük dosyaları bulmak için tarayın."}}}},
+    "Scanning": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Taranıyor"}}}},
+    "Scanning Safari…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Safari taranıyor…"}}}},
+    "Scripts": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Betikler"}}}},
+    "Search apps": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulama ara"}}}},
+    "Select %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ öğesini seç"}}}},
+    "Select Safe in This Section": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Bölümdeki Güvenli Kalemleri Seç"}}}},
+    "Select every item that is regenerated automatically": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kendiliğinden yeniden oluşan her kalemi seç"}}}},
+    "Select everything in %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ içindeki her şeyi seç"}}}},
+    "Select safe": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Güvenlileri seç"}}}},
+    "Settings": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ayarlar"}}}},
+    "Settings…": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Ayarlar…"}}}},
+    "Shared & other users": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Paylaşılan ve diğer kullanıcılar"}}}},
+    "Shared container": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Paylaşılan kapsayıcı"}}}},
+    "Show": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Göster"}}}},
+    "Show All": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tümünü Göster"}}}},
+    "Show all": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Tümünü göster"}}}},
+    "Show largest entries": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "En büyük girdileri göster"}}}},
+    "Shut down simulators at power off": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kapanışta simülatörleri kapat"}}}},
+    "Simulator devices": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Simülatör aygıtları"}}}},
+    "Simulator runtimes": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Simülatör runtime'ları"}}}},
+    "Size": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Boyut"}}}},
+    "Sort by": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sırala"}}}},
+    "Space to recover: %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kazanılacak alan: %@"}}}},
+    "Stop scanning %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ klasörünü taramayı durdur"}}}},
+    "Storage Diagnostics": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama tanılama"}}}},
+    "Storage overview": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Depolama özeti"}}}},
+    "System": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sistem"}}}},
+    "System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sistem Verileri bir tahmindir. macOS, üçüncü taraf ölçümlerinden farklı olabilecek özel depolama kategorileri ve APFS muhasebesi kullanır."}}}},
+    "Temporary files": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Geçici dosyalar"}}}},
+    "The app itself": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uygulamanın kendisi"}}}},
+    "They can be put back from the Trash until you empty it.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çöp Sepeti'ni boşaltana kadar geri alınabilirler."}}}},
+    "This Mac": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu Mac"}}}},
+    "This is regenerated automatically when needed.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Gerektiğinde kendiliğinden yeniden oluşturulur."}}}},
+    "This removes local website data and caches. You may be signed out or lose offline website data. Bookmarks and saved passwords are not deleted.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu işlem yerel web sitesi verilerini ve önbellekleri siler. Oturumlarınız kapanabilir veya çevrimdışı web sitesi verileri kaybolabilir. Yer işaretleri ve kayıtlı parolalar silinmez."}}}},
+    "This unusually large WebKit database is likely runaway Safari storage.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Bu alışılmadık derecede büyük WebKit veritabanı büyük olasılıkla kontrolden çıkmış Safari depolamasıdır."}}}},
+    "Time Machine snapshots": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Time Machine anlık görüntüleri"}}}},
+    "Tools": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Araçlar"}}}},
+    "Total": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Toplam"}}}},
+    "Total Safari Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Toplam Safari Verisi"}}}},
+    "Trash": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Çöp Sepeti"}}}},
+    "Unavailable": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılamıyor"}}}},
+    "Uninstall %@?": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "%@ kaldırılsın mı?"}}}},
+    "Uninstall · %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kaldır · %@"}}}},
+    "Uninstaller": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kaldırıcı"}}}},
+    "Unused 1+ year": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "1+ yıldır kullanılmayan"}}}},
+    "Unused 30+ days": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "30+ gündür kullanılmayan"}}}},
+    "Unused 90+ days": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "90+ gündür kullanılmayan"}}}},
+    "Up to %@ once macOS purges caches": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "macOS önbellekleri temizleyince %@ kadar"}}}},
+    "Used": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Kullanılan"}}}},
+    "Version": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sürüm"}}}},
+    "Version %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sürüm %@"}}}},
+    "Videos": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Videolar"}}}},
+    "Virtual machines": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Sanal makineler"}}}},
+    "Volume": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Birim"}}}},
+    "Warning": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Uyarı"}}}},
+    "Web storage": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Web depolaması"}}}},
+    "Website Data": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Web Sitesi Verisi"}}}},
+    "Website data and caches": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Web sitesi verileri ve önbellekler"}}}},
+    "Website data and caches, cleaned with a strict allow-list.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Web sitesi verileri ve önbellekler, katı bir izin listesiyle temizlenir."}}}},
+    "Website origins: %lld": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Web sitesi kaynakları: %lld"}}}},
+    "What is using your disk, and what can safely go.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Diskinizi ne kullanıyor ve neler güvenle silinebilir."}}}},
+    "Where the space goes": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Alan nereye gidiyor"}}}},
+    "Window state": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Pencere durumu"}}}},
+    "Without it macOS asks for every protected folder and hides Mail, Safari and Time Machine data. Add System Data in the settings pane, then reopen the app.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Verilmezse macOS her korumalı klasör için ayrı sorar; Mail, Safari ve Time Machine verileri görünmez. Ayarlar bölmesinde System Data'yı ekleyin, sonra uygulamayı yeniden açın."}}}},
+    "Xcode": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Xcode"}}}},
+    "Xcode & Simulators": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "Xcode ve Simülatörler"}}}},
+    "free of %@": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "boş, toplam %@"}}}},
+    "iOS device backups": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "iOS aygıt yedekleri"}}}},
+    "macOS frees purgeable space on its own when it needs room.": {"localizations": {"tr": {"stringUnit": {"state": "translated", "value": "macOS yer gerektiğinde temizlenebilir alanı kendisi boşaltır."}}}}
   }
 }

@@ -11,6 +11,9 @@ final class ScanModel {
     /// Safari is deliberately handled by a dedicated cleaner instead of the
     /// generic folder scanner, which must never offer to remove its container.
     private(set) var safari = SafariStorageModel()
+    /// The window's tools keep their state while the window is closed.
+    let largeFiles = LargeFilesModel()
+    let uninstaller = UninstallerModel()
     private(set) var storageMetrics: StorageMetrics = DiskSize.metrics()
     private(set) var reclaimedBytes: Int64 = 0
     private(set) var busyItemIDs: Set<String> = []
@@ -25,6 +28,8 @@ final class ScanModel {
     /// Items the user chose not to see again. Persisted; ids are path-based.
     private(set) var hiddenIDs: Set<String>
     var selectedIDs: Set<String> = []
+    /// The window's current page; the menu panel can jump straight to one.
+    var page: AppPage = .overview
     var errorMessage: String?
     /// Non-error feedback, such as "moved to the Trash".
     var notice: String?
@@ -75,6 +80,21 @@ final class ScanModel {
         hiddenIDs.insert(item.id)
         selectedIDs.remove(item.id)
         UserDefaults.standard.set(Array(hiddenIDs).sorted(), forKey: Self.hiddenKey)
+    }
+
+    var hiddenItems: [StorageItem] {
+        items.filter { hiddenIDs.contains($0.id) }
+    }
+
+    func unhide(_ item: StorageItem) {
+        hiddenIDs.remove(item.id)
+        UserDefaults.standard.set(Array(hiddenIDs).sorted(), forKey: Self.hiddenKey)
+    }
+
+    /// Space freed by the window's tools (large files, uninstaller).
+    func recordReleased(_ bytes: Int64) {
+        reclaimedBytes += bytes
+        refreshStorageMetrics()
     }
 
     func unhideAll() {
@@ -136,6 +156,23 @@ final class ScanModel {
 
     func selectAllSafe() {
         selectedIDs = Set(visibleItems.filter { $0.safety == .safe && !$0.action.isManual }.map(\.id))
+    }
+
+    func selectAll(in category: StorageCategory) {
+        let ids = visibleItems.filter { $0.category == category && !$0.action.isManual }.map(\.id)
+        if Set(ids).isSubset(of: selectedIDs) {
+            selectedIDs.subtract(ids)
+        } else {
+            selectedIDs.formUnion(ids)
+        }
+    }
+
+    func total(of section: StorageSection) -> Int64 {
+        visibleItems.filter { $0.category.section == section }.reduce(0) { $0 + ($1.sizeBytes ?? 0) }
+    }
+
+    func safeTotal(of section: StorageSection) -> Int64 {
+        visibleItems.filter { $0.category.section == section && $0.safety == .safe }.reduce(0) { $0 + ($1.sizeBytes ?? 0) }
     }
 
     func clearSelection() {

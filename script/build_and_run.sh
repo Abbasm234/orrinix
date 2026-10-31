@@ -51,26 +51,26 @@ PLIST
 codesign --force --deep --sign - "$APP_BUNDLE"
 
 open_app() {
-  /usr/bin/open -n "$APP_BUNDLE"
+  /usr/bin/open -n "$APP_BUNDLE" --args "$@"
 }
 
 case "$MODE" in
   run)
-    open_app
+    open_app "${@:2}"
     ;;
   --debug|debug)
     lldb -- "$APP_BINARY"
     ;;
   --logs|logs)
-    open_app
+    open_app "${@:2}"
     /usr/bin/log stream --info --style compact --predicate "process == \"$APP_NAME\""
     ;;
   --telemetry|telemetry)
-    open_app
+    open_app "${@:2}"
     /usr/bin/log stream --info --style compact --predicate "subsystem == \"$BUNDLE_ID\""
     ;;
   --verify|verify)
-    open_app
+    open_app "${@:2}"
     sleep 1
     pgrep -x "$APP_NAME" >/dev/null
     ;;

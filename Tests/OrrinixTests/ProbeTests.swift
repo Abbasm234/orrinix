@@ -126,6 +126,8 @@ import Testing
         #expect(report.websiteDataBytes > 0)
         #expect(report.origins.count == 1)
         #expect(report.largestWAL?.displayName == "localstorage.sqlite3-wal")
+        #expect(report.totalBytes == report.websiteDataBytes + report.cacheBytes + report.otherBytes,
+                "The Safari total must never be smaller than its parts.")
 
         let result = try await SafariStorageCleaner.clean(
             .targeted(origin), paths: paths, requiresSafariToBeClosed: false
@@ -134,6 +136,49 @@ import Testing
         #expect(!origin.exists)
         #expect(bookmarks.exists, "Safari bookmarks must be outside the cleanup allow-list.")
         #expect(result.recoveredBytes > 0)
+    }
+
+    @Test func largeFileFinderHonoursTheThreshold() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "orrinix-large-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: root.appending(path: "nested"), withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try Data(count: 3_000_000).write(to: root.appending(path: "nested/big.dmg"))
+        try Data(count: 10_000).write(to: root.appending(path: "small.zip"))
+
+        let found = await LargeFileFinder.scan(roots: [root], minimumBytes: 1_000_000)
+
+        #expect(found.map(\.url.lastPathComponent) == ["big.dmg"])
+        #expect(found.first?.kind == .diskImages)
+    }
+
+    @Test func fileKindsFollowTheExtension() {
+        #expect(LargeFile.Kind.of(URL(fileURLWithPath: "/x/Setup.PKG")) == .installers)
+        #expect(LargeFile.Kind.of(URL(fileURLWithPath: "/x/movie.mov")) == .videos)
+        #expect(LargeFile.Kind.of(URL(fileURLWithPath: "/x/backup.tar")) == .archives)
+        #expect(LargeFile.Kind.of(URL(fileURLWithPath: "/x/notes.txt")) == .other)
+    }
+
+    @Test func orphanCandidatesLookLikeThirdPartyBundleIDs() {
+        #expect(AppUninstaller.looksLikeBundleID("com.example.App"))
+        #expect(AppUninstaller.looksLikeBundleID("io.tailscale.ipn.macos"))
+        #expect(!AppUninstaller.looksLikeBundleID("com.apple.Safari"))
+        #expect(!AppUninstaller.looksLikeBundleID("Google"))
+        #expect(!AppUninstaller.looksLikeBundleID("com.example"))
+    }
+
+    @Test func jetBrainsVersionsGroupByProduct() {
+        #expect(EditorProbe.productName("IntelliJIdea2024.2") == "IntelliJIdea")
+        #expect(EditorProbe.productName("PyCharm2025.1") == "PyCharm")
+    }
+
+    @Test func everyCategoryBelongsToASection() {
+        let covered = StorageSection.allCases.flatMap(\.categories)
+        #expect(Set(covered) == Set(StorageCategory.allCases))
+        #expect(covered.count == StorageCategory.allCases.count)
+    }
+
+    @Test func requireQuitPassesWhenTheAppIsNotRunning() async throws {
+        try await Reclaimer.perform(.requireQuit(bundleIDs: ["com.example.not-running"], appName: "Example"))
     }
 
     @Test func shellQuotingSurvivesSingleQuotes() {

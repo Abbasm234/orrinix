@@ -10,7 +10,8 @@ struct OrrinixApp: App {
     init() {
         let headlessMode = Self.headlessMode(from: CommandLine.arguments)
         self.headlessMode = headlessMode
-        _model = State(initialValue: ScanModel(scansAutomatically: headlessMode == nil))
+        let model = ScanModel(scansAutomatically: headlessMode == nil)
+        _model = State(initialValue: model)
 
         // Menu bar only: no Dock icon, no main window.
         NSApplication.shared.setActivationPolicy(.accessory)
@@ -19,6 +20,14 @@ struct OrrinixApp: App {
         // the utility resident until the user explicitly chooses Quit.
         ProcessInfo.processInfo.automaticTerminationSupportEnabled = true
         ProcessInfo.processInfo.disableAutomaticTermination("Orrinix must remain available from the menu bar.")
+
+        // `--window` opens the full window at launch, for development.
+        if headlessMode == nil, CommandLine.arguments.contains("--window") {
+            // SwiftUI creates the App during launch; wait for the run loop.
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated { MainWindowController.shared.show(model: model) }
+            }
+        }
 
         if let headlessMode {
             Task {

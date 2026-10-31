@@ -8,6 +8,9 @@ struct ItemRow: View {
     let onToggle: () -> Void
     let onDelete: () -> Void
     let onHide: () -> Void
+    /// Size relative to the largest item in its group, for the size bar.
+    var fraction: Double = 0
+    var tint: Color = .accentColor
 
     @State private var showsInstructions = false
     @State private var isExpanded = false
@@ -36,12 +39,18 @@ struct ItemRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
+                    if fraction > 0 {
+                        SizeBar(fraction: fraction, tint: tint)
+                            .frame(maxWidth: 220)
+                            .padding(.top, 2)
+                    }
                 }
                 .contentShape(Rectangle())
                 .onTapGesture { toggleExpanded() }
 
                 Spacer(minLength: 8)
                 Text(item.sizeBytes?.byteString ?? "—")
+                    .font(.callout.weight(.medium))
                     .monospacedDigit()
                     .foregroundStyle(item.sizeBytes == nil ? .secondary : .primary)
                     .frame(minWidth: 68, alignment: .trailing)
@@ -113,19 +122,11 @@ struct ItemRow: View {
     private var safetyBadge: some View {
         Text(item.safety.label)
             .font(.caption2.weight(.medium))
-            .padding(.horizontal, 5)
+            .padding(.horizontal, 6)
             .padding(.vertical, 1)
-            .background(badgeColor.opacity(0.18), in: Capsule())
-            .foregroundStyle(badgeColor)
+            .background(item.safety.tint.opacity(0.15), in: Capsule())
+            .foregroundStyle(item.safety.tint)
             .accessibilityLabel(L("Safety: %@", item.safety.label))
-    }
-
-    private var badgeColor: Color {
-        switch item.safety {
-        case .safe: .green
-        case .review: .orange
-        case .manual: .secondary
-        }
     }
 
     // MARK: Actions
@@ -177,6 +178,7 @@ struct ItemRow: View {
             }
         }
         .buttonStyle(.borderless)
+        .foregroundStyle(.secondary)
     }
 
     private func instructionsPopover(_ instructions: String) -> some View {

@@ -182,8 +182,11 @@ enum SafariStorageCleaner {
 
         let cacheBytes = containerCaches.bytes + globalCaches.bytes
         let otherBytes = max(container.bytes - website.bytes - containerCaches.bytes, 0) + safariFolder.bytes
+        // The container root can be unreadable while its subfolders are not
+        // (macOS app-data protection), so the total is built from the parts
+        // rather than from the container measurement alone.
         return SafariStorageReport(
-            totalBytes: container.bytes + globalCaches.bytes + safariFolder.bytes,
+            totalBytes: website.bytes + cacheBytes + otherBytes,
             websiteDataBytes: website.bytes,
             cacheBytes: cacheBytes,
             otherBytes: otherBytes,

@@ -3,14 +3,11 @@ import SwiftUI
 
 struct MenuView: View {
     @Environment(ScanModel.self) private var model
-    @Environment(\.colorScheme) private var colorScheme
     @State private var pendingDeletion: StorageItem?
     @State private var confirmsBatch = false
     @State private var searchQuery = ""
-
-    private static let fullDiskAccessPane = URL(
-        string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
-    )!
+    @State private var expanded: Set<StorageCategory> = []
+    @State private var showsSafari = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -34,6 +31,10 @@ struct MenuView: View {
         }
     }
 
+    private func openWindow(_ page: AppPage? = nil) {
+        MainWindowController.shared.show(model: model, page: page)
+    }
+
     // MARK: Confirmation
 
     /// Inline rather than a sheet: the menu bar panel is not a regular window,
@@ -43,14 +44,14 @@ struct MenuView: View {
             if let item = pendingDeletion {
                 Text(L("Delete %@?", item.name))
                     .font(.subheadline.weight(.semibold))
-                Text(confirmationMessage(for: item))
+                Text(model.confirmationMessage(for: item))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 Text(L("Delete %lld items?", model.selectedItems.count))
                     .font(.subheadline.weight(.semibold))
-                Text(batchMessage)
+                Text(model.batchMessage)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -74,56 +75,63 @@ struct MenuView: View {
                     Text(pendingDeletion != nil ? L("Delete") : L("Delete %lld items", model.selectedItems.count))
                 }
                 .keyboardShortcut(.defaultAction)
+                .buttonStyle(.borderedProminent)
                 .tint(.red)
             }
             .controlSize(.small)
         }
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(.red.opacity(0.06))
+        .background(.red.opacity(0.07))
     }
 
     // MARK: Header
 
     private var header: some View {
         HStack(spacing: 12) {
-            Image(systemName: "internaldrive.fill")
-                .font(.system(size: 23, weight: .medium))
-                .foregroundStyle(.cyan)
-                .frame(width: 44, height: 44)
-                .background(.cyan.opacity(0.10), in: RoundedRectangle(cornerRadius: 14))
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("Orrinix")
-                        .font(.system(size: 21, weight: .semibold, design: .rounded))
-                }
+            TintedIcon(symbol: "internaldrive.fill", tint: .accentColor, size: 36)
+            VStack(alignment: .leading, spacing: 1) {
+                Text("Orrinix")
+                    .font(.system(size: 17, weight: .semibold))
                 Text(model.isScanning ? model.phase : L("On this Mac"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
             Spacer()
+            Button {
+                openWindow()
+            } label: {
+                Label(L("Open Orrinix"), systemImage: "macwindow")
+            }
+            .controlSize(.small)
+            .help(L("Open the full window with every tool"))
             if model.isScanning {
                 ProgressView()
                     .controlSize(.small)
+                    .frame(width: 24)
                     .accessibilityLabel(L("Scanning"))
             } else {
                 Button {
                     Task { await model.scan() }
                 } label: {
-                    Label(L("Rescan"), systemImage: "arrow.clockwise")
+                    Image(systemName: "arrow.clockwise")
                 }
                 .controlSize(.small)
+                .help(L("Rescan"))
+                .accessibilityLabel(L("Rescan"))
             }
         }
-        .padding(18)
+        .padding(.horizontal, 16)
+        .padding(.top, 14)
+        .padding(.bottom, 10)
     }
 
     // MARK: Full Disk Access
 
     private var accessBanner: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "lock.shield")
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "lock.shield.fill")
                 .foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 2) {
                 Text(L("Grant Full Disk Access once"))
@@ -134,75 +142,41 @@ struct MenuView: View {
             }
             Spacer()
             Button(L("Open Settings")) {
-                NSWorkspace.shared.open(Self.fullDiskAccessPane)
+                NSWorkspace.shared.open(ScanModel.fullDiskAccessPane)
             }
             .controlSize(.small)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-        .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        .padding(10)
+        .background(.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .padding(.horizontal, 16)
         .padding(.bottom, 10)
     }
 
     // MARK: Content
 
-    @ViewBuilder
     private var content: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 12) {
                 overview
-                SafariStorageCard(model: model.safari) {
-                    NSWorkspace.shared.open(Self.fullDiskAccessPane)
-                } onGlobalCleanupFinished: {
-                    model.refreshStorageMetrics()
+                HStack(spacing: 10) {
+                    MetricTile(title: L("Safe to reclaim"), value: model.safeBytes.byteString,
+                               symbol: "checkmark.shield.fill", tint: .green, translucent: true)
+                    MetricTile(title: L("Reclaimed this session"), value: model.reclaimedBytes.byteString,
+                               symbol: "arrow.up.forward.circle.fill", tint: .teal, translucent: true)
                 }
-                .groupBoxStyle(StorageGroupBoxStyle())
                 HStack {
-                    Text(L("Estimated System Data")).font(.headline)
+                    Text(L("Estimated System Data"))
+                        .font(.headline)
                     Spacer()
                     Button(L("Select safe")) { model.selectAllSafe() }
                         .controlSize(.small)
                         .disabled(model.visibleItems.isEmpty)
                 }
-                HStack(spacing: 8) {
-                    Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                    TextField(L("Filter items"), text: $searchQuery)
-                        .textFieldStyle(.plain)
-                }
-                .padding(10)
-                .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 10))
-                if model.visibleItems.isEmpty {
-                    HStack {
-                        if model.isScanning { ProgressView().controlSize(.small) }
-                        Text(model.isScanning ? L("Measuring…") : L("Nothing to reclaim"))
-                            .foregroundStyle(.secondary)
-                    }.padding(.vertical, 16)
-                } else if filteredCategories.isEmpty {
-                    Text(L("No matching locations")).foregroundStyle(.secondary).padding(.vertical, 16)
-                }
-                ForEach(filteredCategories, id: \.category) { group in
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text(group.category.title).font(.subheadline.weight(.semibold))
-                            Spacer()
-                            Text(group.total.byteString).monospacedDigit().foregroundStyle(.secondary)
-                        }
-                        Divider()
-                        ForEach(group.items) { item in
-                            ItemRow(
-                                item: item,
-                                isBusy: model.busyItemIDs.contains(item.id),
-                                isSelected: model.selectedIDs.contains(item.id),
-                                onToggle: { model.toggleSelection(item) },
-                                onDelete: { pendingDeletion = item },
-                                onHide: { model.hide(item) }
-                            )
-                        }
-                    }
-                    .padding(14)
-                    .background(.quaternary.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
-                }
+                .padding(.top, 4)
+                searchField
+                safariGroup
+                categoryList
+                toolsRow
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
@@ -210,102 +184,141 @@ struct MenuView: View {
     }
 
     private var overview: some View {
-        VStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Label(L("Storage overview"), systemImage: "internaldrive")
-                        .font(.subheadline.weight(.medium))
-                    Spacer()
-                    Text(model.isScanning ? L("Scanning") : L("On this Mac"))
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(model.storageMetrics.physicalFreeBytes.byteString)
-                        .font(.system(size: 36, weight: .medium, design: .rounded))
-                        .monospacedDigit()
-                    Text(L("Free now")).foregroundStyle(.secondary)
-                }
-                Text(L("Estimated System Data: %@", model.measuredBytes.byteString))
-                    .font(.caption).foregroundStyle(.secondary)
-                    .help(L("System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements."))
-                if let reclaimable = model.storageMetrics.estimatedReclaimableBytes {
-                    metricRow(L("Potentially reclaimable"), reclaimable.byteString)
-                }
-                if let potential = model.storageMetrics.potentialAvailableBytes {
-                    metricRow(L("Potential available"), potential.byteString)
-                }
-                Divider()
-                HStack {
-                    Label(L("Measured locations"), systemImage: "folder")
-                    Spacer()
-                    Text("\(model.visibleItems.count)").monospacedDigit()
-                }.font(.caption).foregroundStyle(.secondary)
-                DisclosureGroup(L("Storage Diagnostics")) {
-                    diagnostics
-                }
-                .font(.caption)
-            }
-            .padding(18)
-            .foregroundStyle(colorScheme == .dark ? Color.white : Color.black)
-            .modifier(OverviewSurface())
-            HStack(spacing: 12) {
-                metric(title: L("Safe to reclaim"), value: model.safeBytes.byteString, symbol: "checkmark.shield", tint: .green)
-                metric(title: L("Reclaimed this session"), value: model.reclaimedBytes.byteString, symbol: "arrow.up.right", tint: .cyan)
-            }
-        }
-    }
-
-    private func metricRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label)
-            Spacer()
-            Text(value).monospacedDigit()
-        }
-        .font(.caption)
-        .foregroundStyle(.secondary)
-    }
-
-    private var diagnostics: some View {
         let metrics = model.storageMetrics
-        return VStack(alignment: .leading, spacing: 3) {
-            diagnosticRow(L("Mount"), metrics.mountPoint.path)
-            diagnosticRow(L("Total"), "\(metrics.totalBytes) bytes")
-            diagnosticRow(L("Used"), "\(metrics.usedBytes) bytes")
-            diagnosticRow(L("Physical free"), "\(metrics.physicalFreeBytes) bytes")
-            diagnosticRow(L("Available for Important Usage"), metrics.importantUsageAvailableBytes.map { "\($0) bytes" } ?? L("Unavailable"))
-            diagnosticRow(L("Available for Opportunistic Usage"), metrics.opportunisticAvailableBytes.map { "\($0) bytes" } ?? L("Unavailable"))
-            diagnosticRow(L("Filesystem"), metrics.filesystemType ?? L("Unavailable"))
-            diagnosticRow(L("Volume"), metrics.volumeName ?? L("Unavailable"))
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(metrics.physicalFreeBytes.byteString)
+                    .font(.system(size: 28, weight: .semibold, design: .rounded))
+                    .monospacedDigit()
+                Text(L("free of %@", metrics.totalBytes.byteString))
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            .help(L("System Data is an estimate. macOS uses private storage categorization and APFS accounting that may differ from third-party measurements."))
+            StorageBar(metrics: metrics, segments: model.sectionSegments, height: 10)
         }
-        .textSelection(.enabled)
+        .card(padding: 14, translucent: true)
+    }
+
+    private var searchField: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField(L("Filter items"), text: $searchQuery)
+                .textFieldStyle(.plain)
+            if !searchQuery.isEmpty {
+                Button { searchQuery = "" } label: { Image(systemName: "xmark.circle.fill") }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(L("Clear filter"))
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(.background.opacity(0.55), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous).strokeBorder(.separator.opacity(0.5), lineWidth: 0.5))
+    }
+
+    @ViewBuilder
+    private var safariGroup: some View {
+        if searchQuery.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Button {
+                    withAnimation(.snappy(duration: 0.2)) { showsSafari.toggle() }
+                } label: {
+                    HStack(spacing: 10) {
+                        TintedIcon(symbol: "safari.fill", tint: .blue)
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(L("Safari Storage")).font(.subheadline.weight(.semibold))
+                            Text(L("Website data and caches")).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if let total = model.safari.report?.totalBytes {
+                            Text(total.byteString).font(.callout.weight(.medium)).monospacedDigit()
+                        } else if model.safari.isScanning {
+                            ProgressView().controlSize(.mini)
+                        }
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                            .rotationEffect(.degrees(showsSafari ? 90 : 0))
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                if showsSafari {
+                    Divider()
+                    SafariStorageCard(model: model.safari) {
+                        NSWorkspace.shared.open(ScanModel.fullDiskAccessPane)
+                    } onGlobalCleanupFinished: {
+                        model.refreshStorageMetrics()
+                    }
+                    .groupBoxStyle(ContentOnlyGroupBoxStyle())
+                }
+            }
+            .card(padding: 12, translucent: true)
+        }
+    }
+
+    @ViewBuilder
+    private var categoryList: some View {
+        let groups = filteredCategories
+        if model.visibleItems.isEmpty {
+            HStack {
+                if model.isScanning { ProgressView().controlSize(.small) }
+                Text(model.isScanning ? L("Measuring…") : L("Nothing to reclaim"))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 16)
+        } else if groups.isEmpty {
+            Text(L("No matching locations")).foregroundStyle(.secondary).padding(.vertical, 16)
+        }
+        ForEach(groups, id: \.category) { group in
+            CategoryGroupView(
+                category: group.category,
+                items: group.items,
+                total: group.total,
+                isExpanded: Binding(
+                    get: { !searchQuery.isEmpty || expanded.contains(group.category) },
+                    set: { if $0 { expanded.insert(group.category) } else { expanded.remove(group.category) } }
+                ),
+                translucent: true,
+                onDelete: { pendingDeletion = $0 }
+            )
+        }
+    }
+
+    private var toolsRow: some View {
+        HStack(spacing: 10) {
+            toolButton(.largeFiles, subtitle: L("Find big, forgotten files"))
+            toolButton(.uninstaller, subtitle: L("Remove apps completely"))
+        }
         .padding(.top, 4)
     }
 
-    private func diagnosticRow(_ label: String, _ value: String) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(label).foregroundStyle(.secondary)
-            Spacer(minLength: 8)
-            Text(value).monospaced().multilineTextAlignment(.trailing)
+    private func toolButton(_ page: AppPage, subtitle: String) -> some View {
+        Button {
+            openWindow(page)
+        } label: {
+            HStack(spacing: 10) {
+                TintedIcon(symbol: page.symbol, tint: page.tint, size: 26)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(page.title).font(.subheadline.weight(.semibold))
+                    Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+            .card(padding: 10, translucent: true)
+            .contentShape(Rectangle())
         }
-    }
-
-    private func metric(title: String, value: String, symbol: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: symbol).foregroundStyle(tint)
-            Text(value).font(.system(size: 23, weight: .medium, design: .rounded)).monospacedDigit()
-            Text(title).font(.caption).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(.quaternary.opacity(0.3), in: RoundedRectangle(cornerRadius: 16))
+        .buttonStyle(.plain)
     }
 
     /// The scan can surface dozens of locations. Filtering stays local to the
     /// presentation layer, leaving the measured total and any selection intact.
     private var filteredCategories: [(category: StorageCategory, items: [StorageItem], total: Int64)] {
         let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return model.categories }
-        return model.categories.compactMap { group in
+        let groups = query.isEmpty ? model.categories : model.categories.compactMap { group in
             let matches = group.items.filter {
                 $0.name.localizedCaseInsensitiveContains(query)
                     || $0.detail.localizedCaseInsensitiveContains(query)
@@ -314,14 +327,15 @@ struct MenuView: View {
             guard !matches.isEmpty else { return nil }
             return (group.category, matches, matches.reduce(0) { $0 + ($1.sizeBytes ?? 0) })
         }
+        return groups.sorted { $0.total > $1.total }
     }
 
     // MARK: Footer
 
     private var footer: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             if let message = model.errorMessage {
-                feedbackRow(message, symbol: "exclamationmark.triangle.fill", tint: .yellow) {
+                feedbackRow(message, symbol: "exclamationmark.triangle.fill", tint: .orange) {
                     model.errorMessage = nil
                 }
             } else if let message = model.notice {
@@ -342,6 +356,8 @@ struct MenuView: View {
                         Text(L("Delete %lld selected · %@", model.selectedItems.count, model.selectedBytes.byteString))
                             .monospacedDigit()
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
                     .controlSize(.small)
                     .disabled(!model.busyItemIDs.isEmpty)
                     Button(L("Clear")) {
@@ -351,40 +367,39 @@ struct MenuView: View {
                 }
                 if model.hiddenCount > 0 {
                     Button(L("%lld hidden", model.hiddenCount)) {
-                        model.unhideAll()
+                        openWindow(.settings)
                     }
                     .buttonStyle(.link)
                     .font(.caption)
-                    .help(L("Show all"))
+                    .help(L("Manage hidden items"))
                 }
                 Spacer()
+                Menu {
+                    Toggle(L("Shut down simulators at power off"), isOn: Binding(
+                        get: { model.shutsDownSimulatorsAtPowerOff },
+                        set: { model.shutsDownSimulatorsAtPowerOff = $0 }
+                    ))
+                    Toggle(L("Launch at login"), isOn: Binding(
+                        get: { model.launchesAtLogin },
+                        set: { model.setLaunchAtLogin($0) }
+                    ))
+                    Divider()
+                    Button(L("Settings…")) { openWindow(.settings) }
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+                .accessibilityLabel(L("Settings"))
                 Button(L("Quit")) {
                     NSApplication.shared.terminate(nil)
                 }
                 .controlSize(.small)
                 .keyboardShortcut("q")
             }
-            HStack {
-                Toggle(L("Shut down simulators at power off"), isOn: Binding(
-                    get: { model.shutsDownSimulatorsAtPowerOff },
-                    set: { model.shutsDownSimulatorsAtPowerOff = $0 }
-                ))
-                .toggleStyle(.switch)
-                .controlSize(.mini)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .help(L("Booted simulators ignore the quit request and hold the shutdown for 33 seconds. This shuts them down first."))
-                Toggle(L("Launch at login"), isOn: Binding(
-                    get: { model.launchesAtLogin },
-                    set: { model.setLaunchAtLogin($0) }
-                ))
-                .toggleStyle(.switch)
-                .controlSize(.mini)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
         }
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 16)
         .padding(.vertical, 10)
         // The list above is greedy; the footer must keep its full height so
         // a long error never overlaps the status line.
@@ -409,77 +424,15 @@ struct MenuView: View {
             .buttonStyle(.borderless)
             .accessibilityLabel(L("Dismiss"))
         }
-        .padding(.bottom, 4)
-    }
-
-    private var authorBadge: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "sparkles")
-                .font(.caption.weight(.semibold))
-            Text("Orrinix")
-                .font(.caption)
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 3)
-        .background(.quaternary, in: Capsule())
-        .foregroundStyle(.secondary)
-        .accessibilityLabel("Orrinix")
-    }
-
-    // MARK: Confirmation copy
-
-    private func confirmationMessage(for item: StorageItem) -> String {
-        let size = item.sizeBytes.map { L("Frees about %@. ", $0.byteString) } ?? ""
-        switch item.safety {
-        case .safe:
-            return size + L("This is regenerated automatically when needed.")
-        case .review:
-            return size + item.detail + " " + L("It goes to the Trash first.")
-        case .manual:
-            return item.detail
-        }
-    }
-
-    private var batchMessage: String {
-        let selected = model.selectedItems
-        let review = selected.filter { $0.safety == .review }
-        let privileged = selected.filter { if case .privilegedScript = $0.action { true } else { false } }
-        var lines = [L("Frees about %@. ", model.selectedBytes.byteString)]
-        if !review.isEmpty {
-            let names = review.prefix(4).map(\.name).joined(separator: ", ") + (review.count > 4 ? ", …" : "")
-            lines.append(L("%lld marked Review go to the Trash: %@", review.count, names))
-        }
-        if privileged.count > 1 {
-            lines.append(L("%lld items need root; the password is asked once.", privileged.count))
-        } else if privileged.count == 1 {
-            lines.append(L("1 item needs root; the password is asked once."))
-        }
-        return lines.joined(separator: "\n")
+        .padding(8)
+        .background(tint.opacity(0.1), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 }
 
-private struct OverviewSurface: ViewModifier {
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if reduceTransparency {
-            content.background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 20))
-        } else if #available(macOS 26.0, *) {
-            content.glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20))
-        } else {
-            content.background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20))
-        }
-    }
-}
-
-private struct StorageGroupBoxStyle: GroupBoxStyle {
+/// Shows only a GroupBox's content, for when the surrounding card already
+/// has a header.
+struct ContentOnlyGroupBoxStyle: GroupBoxStyle {
     func makeBody(configuration: Configuration) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-            configuration.label
-            configuration.content.frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(16)
-        .background(.quaternary.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
+        configuration.content.frame(maxWidth: .infinity, alignment: .leading)
     }
 }

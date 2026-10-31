@@ -3,12 +3,15 @@ import SwiftUI
 
 /// `Orrinix --screenshot out.png` renders the menu window offscreen with
 /// a real scan, so the README image is reproducible without clicking.
+/// `--page <name>` renders a page of the full window instead (overview,
+/// xcode, developer, apps, system, safari, largefiles, uninstaller,
+/// settings) and `--light` switches to the light appearance.
 @MainActor
 enum WindowSnapshot {
     static func write(to path: String) async {
         let app = NSApplication.shared
         app.setActivationPolicy(.prohibited)
-        app.appearance = NSAppearance(named: .darkAqua)
+        app.appearance = appearance
 
         let model = ScanModel(scansAutomatically: false)
         if !CommandLine.arguments.contains("--skip-scan") {
@@ -17,17 +20,46 @@ enum WindowSnapshot {
         render(model: model, to: path)
     }
 
+    private static var isLight: Bool { CommandLine.arguments.contains("--light") }
+
+    private static var appearance: NSAppearance? {
+        NSAppearance(named: isLight ? .aqua : .darkAqua)
+    }
+
+    private static var requestedPage: AppPage? {
+        guard let index = CommandLine.arguments.firstIndex(of: "--page"),
+              CommandLine.arguments.indices.contains(index + 1) else { return nil }
+        switch CommandLine.arguments[index + 1] {
+        case "xcode": return .section(.xcode)
+        case "developer": return .section(.developer)
+        case "apps": return .section(.apps)
+        case "system": return .section(.system)
+        case "safari": return .safari
+        case "largefiles": return .largeFiles
+        case "uninstaller": return .uninstaller
+        case "settings": return .settings
+        default: return .overview
+        }
+    }
+
     /// Synchronous on purpose: pumping the run loop is not allowed from an
     /// async function, and SwiftUI needs a few turns to lay the list out.
     private static func render(model: ScanModel, to path: String) {
-        let size = NSSize(width: 480, height: 740)
-        let appearance = NSAppearance(named: .darkAqua)
+        let page = requestedPage
+        let size = page == nil ? NSSize(width: 480, height: 740) : NSSize(width: 1040, height: 720)
+        if let page { model.page = page }
         // The menu bar panel paints its own material; offscreen there is
         // none, so give the view an opaque window background to draw on.
-        let root = MenuView()
-            .environment(model)
-            .environment(\.colorScheme, .dark)
-            .background(Color(nsColor: .windowBackgroundColor))
+        let root = Group {
+            if page == nil {
+                MenuView()
+            } else {
+                MainWindowView()
+            }
+        }
+        .environment(model)
+        .environment(\.colorScheme, isLight ? .light : .dark)
+        .background(Color(nsColor: .windowBackgroundColor))
         let host = NSHostingView(rootView: root)
         host.frame = NSRect(origin: .zero, size: size)
         host.appearance = appearance
@@ -42,7 +74,7 @@ enum WindowSnapshot {
         window.setFrameOrigin(NSPoint(x: -10_000, y: -10_000))
         window.orderBack(nil)
 
-        for _ in 0..<8 {
+        for _ in 0..<(page == nil ? 8 : 16) {
             window.layoutIfNeeded()
             host.layoutSubtreeIfNeeded()
             window.displayIfNeeded()
