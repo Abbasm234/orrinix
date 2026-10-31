@@ -15,19 +15,15 @@ struct ItemRow: View {
     @State private var showsInstructions = false
     @State private var isExpanded = false
     @State private var breakdown: [(url: URL, bytes: Int64)]?
+    @State private var isHovering = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top, spacing: 10) {
-                Toggle(isOn: Binding(get: { isSelected }, set: { _ in onToggle() })) {
-                    EmptyView()
-                }
-                .toggleStyle(.checkbox)
-                .labelsHidden()
-                .disabled(item.action.isManual || isBusy)
-                .opacity(item.action.isManual ? 0 : 1)
-                .accessibilityLabel(L("Select %@", item.name))
-                .padding(.top, 2)
+                SelectionCircle(isOn: isSelected, label: L("Select %@", item.name), action: onToggle)
+                    .disabled(item.action.isManual || isBusy)
+                    .opacity(item.action.isManual ? 0 : 1)
+                    .padding(.top, 1)
 
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
@@ -38,7 +34,7 @@ struct ItemRow: View {
                     Text(item.detail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .lineLimit(isHovering || isExpanded ? 4 : 2)
                     if fraction > 0 {
                         SizeBar(fraction: fraction, tint: tint)
                             .frame(maxWidth: 220)
@@ -53,16 +49,61 @@ struct ItemRow: View {
                     .font(.callout.weight(.medium))
                     .monospacedDigit()
                     .foregroundStyle(item.sizeBytes == nil ? .secondary : .primary)
-                    .frame(minWidth: 68, alignment: .trailing)
+                    .frame(minWidth: 64, alignment: .trailing)
+                // Actions stay out of the way until the pointer is on the row;
+                // the space is kept so sizes never jump.
                 actions
+                    .opacity(isHovering || isBusy || item.action.isManual || isExpanded ? 1 : 0)
             }
             if isExpanded {
                 breakdownView
                     .padding(.leading, 28)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(isSelected ? Color.accentColor.opacity(0.10) : Color.primary.opacity(isHovering ? 0.05 : 0))
+        )
+        .padding(.horizontal, -6)
         .opacity(isBusy ? 0.5 : 1)
+        .onHover { hovering in
+            withAnimation(.easeOut(duration: 0.12)) { isHovering = hovering }
+        }
+        .contextMenu { contextMenu }
+        .accessibilityActions {
+            if let url = item.revealURL {
+                Button(L("Reveal %@ in Finder", item.name)) { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+            }
+            Button(L("Hide %@ from future scans", item.name), action: onHide)
+            if !item.action.isManual {
+                Button(L("Delete %@", item.name), action: onDelete)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var contextMenu: some View {
+        if canExpand {
+            Button(isExpanded ? L("Hide breakdown") : L("Show largest entries"), action: toggleExpanded)
+        }
+        if let url = item.revealURL {
+            Button(L("Reveal in Finder")) { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+            Button(L("Copy Path")) {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(url.path, forType: .string)
+            }
+        }
+        Divider()
+        if !item.action.isManual {
+            Button(isSelected ? L("Deselect") : L("Select"), action: onToggle)
+        }
+        Button(L("Don't show this item again"), action: onHide)
+        if !item.action.isManual {
+            Divider()
+            Button(L("Delete…"), role: .destructive, action: onDelete)
+        }
     }
 
     private var canExpand: Bool {
@@ -71,7 +112,7 @@ struct ItemRow: View {
 
     private func toggleExpanded() {
         guard canExpand else { return }
-        isExpanded.toggle()
+        withAnimation(.snappy(duration: 0.2)) { isExpanded.toggle() }
     }
 
     // MARK: Breakdown

@@ -292,7 +292,8 @@ struct MetricTile: View {
                 Text(title)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
@@ -307,5 +308,140 @@ extension ScanModel {
         StorageSection.allCases.map {
             StorageBar.Segment(id: $0.rawValue, title: $0.title, bytes: total(of: $0), color: $0.tint)
         }
+    }
+}
+
+// MARK: - Panel signature pieces
+
+extension StorageSection {
+    /// Fits a filter chip.
+    var shortTitle: String {
+        switch self {
+        case .xcode: L("Xcode")
+        case .developer: L("Developer")
+        case .apps: L("Apps")
+        case .system: L("System")
+        }
+    }
+}
+
+/// The disk as a ring: one arc per scanned section, then the rest of the
+/// used space, on a track that stands for free space.
+struct RingChart: View {
+    let metrics: StorageMetrics
+    let segments: [StorageBar.Segment]
+    var lineWidth: CGFloat = 14
+
+    @State private var progress: Double = 0
+
+    private var arcs: [(segment: StorageBar.Segment, start: Double, end: Double)] {
+        let total = Double(max(metrics.totalBytes, 1))
+        let explained = segments.filter { $0.bytes > 0 }
+        let rest = max(metrics.usedBytes - explained.reduce(0) { $0 + $1.bytes }, 0)
+        let all = explained + [StorageBar.Segment(
+            id: "used", title: L("Everything else"), bytes: rest, color: Color(nsColor: .tertiaryLabelColor)
+        )]
+        var cursor = 0.0
+        return all.map { segment in
+            let start = cursor
+            cursor += Double(segment.bytes) / total
+            return (segment, start, cursor)
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(.quaternary.opacity(0.6), lineWidth: lineWidth)
+            ForEach(arcs, id: \.segment.id) { arc in
+                // A hairline gap between arcs keeps neighbouring colours apart.
+                let gap = min(0.004, (arc.end - arc.start) / 4)
+                Circle()
+                    .trim(from: arc.start * progress, to: max(arc.end * progress - gap, arc.start * progress))
+                    .stroke(arc.segment.color.gradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
+                    .rotationEffect(.degrees(-90))
+            }
+        }
+        .padding(lineWidth / 2)
+        .onAppear {
+            withAnimation(.spring(duration: 0.9, bounce: 0.15)) { progress = 1 }
+        }
+        .accessibilityElement()
+        .accessibilityLabel(L("%@ used of %@", metrics.usedBytes.byteString, metrics.totalBytes.byteString))
+    }
+}
+
+/// A round selection mark, filled with the accent colour when on. `mixed`
+/// draws a dash, for a group where only some rows are selected.
+struct SelectionCircle: View {
+    let isOn: Bool
+    var isMixed = false
+    var size: CGFloat = 17
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .strokeBorder(isOn || isMixed ? Color.clear : Color.secondary.opacity(0.55), lineWidth: 1.2)
+                    .background(Circle().fill(isOn || isMixed ? Color.accentColor : .clear))
+                Image(systemName: isMixed && !isOn ? "minus" : "checkmark")
+                    .font(.system(size: size * 0.5, weight: .bold))
+                    .foregroundStyle(.white)
+                    .opacity(isOn || isMixed ? 1 : 0)
+                    .scaleEffect(isOn || isMixed ? 1 : 0.4)
+            }
+            .frame(width: size, height: size)
+            .contentShape(Circle())
+            .animation(.spring(duration: 0.25, bounce: 0.4), value: isOn)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .accessibilityAddTraits(isOn ? .isSelected : [])
+    }
+}
+
+/// Soft colour behind the panel's header, picked from the section palette so
+/// the panel has a recognisable look without fighting the system material.
+struct PanelGlow: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let strength = colorScheme == .dark ? 0.30 : 0.20
+        // Radial gradients rather than blurred shapes: they render the same
+        // in the live panel, offscreen snapshots and with Reduce Transparency.
+        ZStack {
+            RadialGradient(colors: [Color.blue.opacity(strength), .clear],
+                           center: UnitPoint(x: 0.1, y: 0.0), startRadius: 0, endRadius: 260)
+            RadialGradient(colors: [Color.purple.opacity(strength), .clear],
+                           center: UnitPoint(x: 0.9, y: 0.05), startRadius: 0, endRadius: 240)
+            RadialGradient(colors: [Color.teal.opacity(strength * 0.6), .clear],
+                           center: UnitPoint(x: 0.5, y: 0.55), startRadius: 0, endRadius: 220)
+        }
+        .frame(maxWidth: .infinity, maxHeight: 340, alignment: .top)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The panel's call to action.
+struct GradientButtonStyle: ButtonStyle {
+    var colors: [Color] = [.blue, .purple]
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.callout.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .background {
+                Capsule().fill(LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing))
+                    .opacity(isEnabled ? 1 : 0.35)
+                    .shadow(color: (colors.last ?? .clear).opacity(isEnabled ? 0.35 : 0), radius: 8, y: 3)
+            }
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.spring(duration: 0.2), value: configuration.isPressed)
     }
 }

@@ -5,7 +5,8 @@ import SwiftUI
 /// a real scan, so the README image is reproducible without clicking.
 /// `--page <name>` renders a page of the full window instead (overview,
 /// xcode, developer, apps, system, safari, largefiles, uninstaller,
-/// settings) and `--light` switches to the light appearance.
+/// settings), `--light` switches to the light appearance and
+/// `--assume-access` hides the Full Disk Access banner.
 @MainActor
 enum WindowSnapshot {
     static func write(to path: String) async {
@@ -13,9 +14,14 @@ enum WindowSnapshot {
         app.setActivationPolicy(.prohibited)
         app.appearance = appearance
 
+        ScanModel.assumesFullDiskAccess = CommandLine.arguments.contains("--assume-access")
         let model = ScanModel(scansAutomatically: false)
         if !CommandLine.arguments.contains("--skip-scan") {
             await model.scan()
+            // The Safari card scans on its own task; give it time to land.
+            for _ in 0..<150 where model.safari.report == nil || model.safari.isScanning {
+                try? await Task.sleep(for: .milliseconds(200))
+            }
         }
         render(model: model, to: path)
     }

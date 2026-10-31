@@ -12,10 +12,18 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" width="480" alt="The redesigned Orrinix dashboard before scanning, showing available storage and Safari storage controls">
+  <img src="assets/screenshot.png" width="400" alt="The Orrinix menu bar panel in dark mode: a ring gauge of the disk split into Xcode, Developer, Apps and System, a Free up safely button, section filter chips and cleanup categories">
+  &nbsp;
+  <img src="assets/panel-light.png" width="400" alt="The same Orrinix menu bar panel in light mode">
 </p>
 
-<p align="center"><sub>Initial dashboard on macOS. Cleanup totals populate after scanning.</sub></p>
+<p align="center"><sub>The menu bar panel: the disk as a ring, one-tap safe cleanup, and every category one click away.</sub></p>
+
+<p align="center">
+  <img src="assets/window-overview.png" width="820" alt="The full Orrinix window: a sidebar with Overview, Xcode and Simulators, Developer Tools, Apps and Browsers, System, Safari, Large Files, Uninstaller and Settings, and an overview page with a storage bar and metric tiles">
+</p>
+
+<p align="center"><sub>The full window, for deeper work: per-section cleanup, a large-file finder and an app uninstaller.</sub></p>
 
 ---
 
@@ -31,18 +39,33 @@ click.
 
 Built for Mac users who want clear answers before they clean.
 
-The redesigned dashboard brings a compact storage overview, quick reclaim
-metrics, grouped cleanup locations, and integrated search. The overview uses
-native Liquid Glass on macOS 26 and later, with a material fallback on macOS
-14 and 15 and an opaque surface when Reduce Transparency is enabled.
+Orrinix lives in the menu bar. The panel shows the disk as a ring split
+into Xcode, developer tools, apps and system data, offers a single **Free up
+X GB safely** button for everything that regenerates on its own, and filters
+the list by section with one click. Rows stay quiet until the pointer is on
+them; right-click any row for Reveal, Copy Path, Hide or Delete.
+
+**Open Orrinix** opens the full window for deeper work:
+
+- **Overview** with a storage bar, totals per section and the largest items.
+- **Xcode & Simulators, Developer Tools, Apps & Browsers, System**: every
+  category with search, a Safe / Review / Manual filter and sorting.
+- **Safari** storage cleaning with a strict allow-list.
+- **Large Files**: big files in Downloads, Desktop, Documents, Movies, Music
+  or any folder you add, filtered by size, by how long since you last opened
+  them, and by kind (installers, archives, videos, disk images).
+- **Uninstaller**: removes an app together with its caches, preferences,
+  containers, login items and helpers, and finds leftovers of apps you
+  already deleted. Everything goes to the Trash first.
+- **Settings**: launch at login, simulator shutdown, Full Disk Access status
+  and the items you chose to hide.
 
 ## Install
 
 Build from source (Xcode 26 or later):
 
-The downloadable `v1.0.2` release includes this redesign and the latest
-storage-accounting and SIP-safe cleanup fixes. Use Xcode 26 or later to build
-from source.
+The downloadable `v1.0.2` release predates the full window and the
+redesigned panel; build from source to get them. Use Xcode 26 or later.
 
 ```bash
 git clone https://github.com/Abbasm234/orrinix.git
@@ -51,7 +74,8 @@ scripts/build-app.sh
 open build/Orrinix.app
 ```
 
-The app has a **Filter items** field, plus a **Launch at login** switch in its footer.
+Search sits behind the magnifying glass next to the section chips; **Launch
+at login** and simulator shutdown live in the gear menu and in Settings.
 
 ## What it does
 
@@ -73,7 +97,8 @@ The app has a **Filter items** field, plus a **Launch at login** switch in its f
   action in the batch is folded into one script, so the administrator
   password is asked once. **Select safe** ticks everything regenerable.
 - **Hide.** The eye button removes an item from future scans (Ollama models
-  you want to keep, say). A footer link brings hidden items back.
+  you want to keep, say). Settings lists hidden items and brings them back
+  one by one.
 - **Free now is physical filesystem space.** Potentially reclaimable APFS
   capacity is shown separately when macOS exposes it; it is never blended into
   the primary Free value.
@@ -102,9 +127,9 @@ The app has a **Filter items** field, plus a **Launch at login** switch in its f
 | Category | Items | Badge |
 | --- | --- | --- |
 | Time Machine snapshots | local APFS snapshots (`tmutil`) | Safe |
-| Simulator devices | per-device caches, unavailable devices, erase a device; the system dyld cache is reported (macOS blocks deleting it, even as root) | Safe / Review / Manual |
-| Simulator runtimes | each installed runtime disk image | Review |
-| Xcode | DerivedData, DeviceSupport, preview devices, caches, Archives, inactive Xcode.app copies | Safe / Review |
+| Simulator devices | per-device caches, unavailable devices, devices unused for 60+ days, erase a device; the system dyld cache is reported (macOS blocks deleting it, even as root) | Safe / Review / Manual |
+| Simulator runtimes | each installed runtime disk image, with how many simulators use it; deletion retries automatically when CoreSimulator leaves its MobileAsset behind | Review |
+| Xcode | DerivedData per project (projects that no longer exist are flagged), DeviceSupport per OS version, each archive by name and version, SwiftUI preview, Interface Builder and playground devices, documentation, Xcode Cloud products, xcodebuild and Instruments caches, inactive Xcode.app copies | Safe / Review |
 | Package managers | brew, npm, pnpm, yarn, pip, uv, CocoaPods, Gradle, Cargo, SwiftPM, Go, Cypress, Playwright; the whole Homebrew prefix | Safe / Manual |
 | Developer tool data | Ollama and Hugging Face models, nvm/rustup/pyenv/rbenv/SDKMAN toolchains, conda, Maven, CocoaPods specs, Gradle distributions, Go modules, Bun, Deno, VS Code and Cursor extensions, Docker CLI, OrbStack, Lima, Colima, Claude Code; any other hidden home folder over 100 MB | Safe / Review |
 | Logs & diagnostics | unified log store (`log erase`), crash reports, ASL, `~/Library/Logs` | Safe |
@@ -115,7 +140,10 @@ The app has a **Filter items** field, plus a **Launch at login** switch in its f
 | iOS device backups | each MobileSync backup with device name and date | Review |
 | Shared & other users | `/Users/Shared` app data (BlueStacks and friends), other accounts | Review / Manual |
 | Android | AVD emulators, SDK system images, platforms, build tools, NDK, emulator, Android Studio caches | Review / Safe |
-| App data & caches | Slack, Discord, Teams, Zoom, Spotify, Adobe, Steam, Epic, Photos, Quick Look and Final Cut render caches; Claude VM bundles; Chrome on-device model; any Application Support / Containers / Group Containers folder over 200 MB, caches over 100 MB | Safe / Review |
+| Code editors & IDEs | VS Code, Insiders, Cursor, Windsurf and VSCodium caches, logs and workspace storage; JetBrains caches per product version and settings of superseded versions | Safe / Review |
+| Browsers | Chrome, Edge, Brave, Arc, Vivaldi, Opera and Chromium disk, code, GPU and service-worker caches across profiles; Firefox cache. Refuses while the browser is open | Safe |
+| Chat & meeting apps | Slack, Discord, Teams and Messenger caches, Zoom data, Webex, WhatsApp media, Telegram media cache | Safe / Review |
+| App data & caches | Spotify, Adobe, Steam, Epic, Photos, Quick Look and Final Cut render caches; Claude VM bundles; Chrome on-device model; any Application Support / Containers / Group Containers folder over 200 MB, caches over 100 MB | Safe / Review |
 | Safari Storage Cleaner | WebsiteData, LocalStorage / IndexedDB / CacheStorage, Safari caches, and abnormally large SQLite WAL files; cleanup targets only explicitly allowed child paths | Quick / Website data / Targeted |
 | Project build folders | `node_modules`, `.build`, `Pods`, `DerivedData` under Desktop, Documents, Developer, Projects | Review |
 | System | macOS installers, device firmware, Mail downloads, `/Library/Caches`, `/Library/Application Support`, Command Line Tools, cryptexes, Spotlight index, swap, iCloud local copies | Safe / Review / Manual |
@@ -157,6 +185,13 @@ The output has `totalBytes`, `usedBytes`, `physicalFreeBytes`, optional
 record per item with `id`, `category`, `name`, `detail`, `sizeBytes`, `safety`,
 `manual` and `path`. See [`docs/storage-accounting.md`](docs/storage-accounting.md)
 for the semantics of each metric.
+
+For development, `script/build_and_run.sh run --window` builds, launches and
+opens the full window. `Orrinix --screenshot out.png` renders the panel
+offscreen after a real scan; add `--page overview` (or `xcode`, `developer`,
+`apps`, `system`, `safari`, `largefiles`, `uninstaller`, `settings`) for a
+window page, `--light` for the light appearance and `--assume-access` to
+leave out the Full Disk Access banner. The README images are made this way.
 
 `sysdata` is a bash script covering the Safe categories only, for machines
 where you would rather not run an app:

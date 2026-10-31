@@ -134,11 +134,16 @@ final class ScanModel {
         selectedItems.reduce(0) { $0 + ($1.sizeBytes ?? 0) }
     }
 
+    /// Set by `--screenshot --assume-access`, so README images built from a
+    /// development binary do not show the access banner.
+    static var assumesFullDiskAccess = false
+
     /// Full Disk Access is the one grant that covers every folder the scan
     /// touches. ~/Library/Safari is TCC-protected, so listing it only works
     /// once the grant exists.
     static func checkFullDiskAccess() -> Bool {
-        (try? FileManager.default.contentsOfDirectory(atPath: URL.home("Library/Safari").path)) != nil
+        if assumesFullDiskAccess { return true }
+        return (try? FileManager.default.contentsOfDirectory(atPath: URL.home("Library/Safari").path)) != nil
     }
 
     func refreshAccess() {

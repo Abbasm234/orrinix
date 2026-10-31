@@ -9,6 +9,8 @@ struct CategoryGroupView: View {
     let total: Int64
     @Binding var isExpanded: Bool
     var translucent = false
+    /// This category's share of everything measured, drawn under its title.
+    var share: Double = 0
     let onDelete: (StorageItem) -> Void
 
     private var largest: Int64 {
@@ -21,6 +23,10 @@ struct CategoryGroupView: View {
 
     private var allSelected: Bool {
         !selectable.isEmpty && selectable.allSatisfy { model.selectedIDs.contains($0.id) }
+    }
+
+    private var someSelected: Bool {
+        selectable.contains { model.selectedIDs.contains($0.id) }
     }
 
     var body: some View {
@@ -55,14 +61,26 @@ struct CategoryGroupView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(category.title)
                             .font(.subheadline.weight(.semibold))
-                        Text(items.count == 1 ? L("1 item") : L("%lld items", items.count))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        HStack(spacing: 6) {
+                            Text(items.count == 1 ? L("1 item") : L("%lld items", items.count))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            if share > 0 {
+                                SizeBar(fraction: share, tint: category.tint, height: 3)
+                                    .frame(width: 56)
+                                Text(share.formatted(.percent.precision(.fractionLength(0))))
+                                    .font(.caption2)
+                                    .monospacedDigit()
+                                    .foregroundStyle(.tertiary)
+                            }
+                        }
                     }
                     Spacer(minLength: 8)
                     Text(total.byteString)
-                        .font(.callout.weight(.medium))
+                        .font(.callout.weight(.semibold))
                         .monospacedDigit()
+                        .contentTransition(.numericText())
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.tertiary)
@@ -75,13 +93,13 @@ struct CategoryGroupView: View {
             .accessibilityHint(isExpanded ? L("Collapse") : L("Expand"))
 
             if !selectable.isEmpty {
-                Toggle(isOn: Binding(get: { allSelected }, set: { _ in model.selectAll(in: category) })) {
-                    EmptyView()
+                SelectionCircle(
+                    isOn: allSelected, isMixed: someSelected,
+                    label: L("Select everything in %@", category.title)
+                ) {
+                    model.selectAll(in: category)
                 }
-                .toggleStyle(.checkbox)
-                .labelsHidden()
                 .help(L("Select everything in %@", category.title))
-                .accessibilityLabel(L("Select everything in %@", category.title))
             }
         }
     }
