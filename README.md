@@ -66,8 +66,9 @@ them; right-click any row for Reveal, Copy Path, Hide or Delete.
 
 Build from source (Xcode 26 or later):
 
-The downloadable `v1.0.2` release predates the full window and the
-redesigned panel; build from source to get them. Use Xcode 26 or later. See
+Signed, notarized builds are on the
+[Releases](https://github.com/Abbasm234/orrinix/releases) page; versions
+before 1.1.0 predate the full window and the redesigned panel. See
 [`CHANGELOG.md`](CHANGELOG.md) for what changed in each version.
 
 ```bash
@@ -239,16 +240,19 @@ The final artifact is `dist/Orrinix-vVERSION-macOS.zip` with a matching SHA-256
 file. It requires a Developer ID Application certificate and an
 `OrrinixNotary` Keychain profile; see [`docs/releasing.md`](docs/releasing.md).
 
-To also bump `VERSION`, commit, tag, push, publish the GitHub release, and
-update the Homebrew cask:
+To also bump `VERSION`, move the changelog's Unreleased section under the
+new version, commit, tag, push and publish the GitHub release with the ZIP and
+its checksum:
 
 ```bash
+scripts/release.sh --check  # list anything missing, change nothing
+scripts/release.sh minor    # 1.0.2 -> 1.1.0
 scripts/release.sh          # patch
-scripts/release.sh minor
 ```
 
-It expects `gh` to be logged in, a configured Homebrew tap, and the same
-notarytool Keychain profile.
+It needs `gh` logged in, a Developer ID Application certificate and the
+`OrrinixNotary` notarytool profile; `--check` prints how to fix each one. Set
+`HOMEBREW_TAP_REPOSITORY` to also update a Homebrew cask.
 
 ## Requirements
 
