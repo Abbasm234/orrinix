@@ -25,6 +25,8 @@
 
 <p align="center"><sub>The full window, for deeper work: per-section cleanup, a large-file finder and an app uninstaller.</sub></p>
 
+<p align="center"><a href="CHANGELOG.md">What's new</a></p>
+
 ---
 
 Open System Settings > General > Storage on a developer Mac and "System
@@ -65,7 +67,8 @@ them; right-click any row for Reveal, Copy Path, Hide or Delete.
 Build from source (Xcode 26 or later):
 
 The downloadable `v1.0.2` release predates the full window and the
-redesigned panel; build from source to get them. Use Xcode 26 or later.
+redesigned panel; build from source to get them. Use Xcode 26 or later. See
+[`CHANGELOG.md`](CHANGELOG.md) for what changed in each version.
 
 ```bash
 git clone https://github.com/Abbasm234/orrinix.git
