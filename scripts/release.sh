@@ -40,6 +40,17 @@ missing() {
   problems=$((problems + 1))
 }
 
+# The Team ID is the OU of any installed Apple signing certificate, so the
+# notarytool hint can be pasted as is instead of containing placeholders.
+team_id() {
+  local name
+  name=$(security find-identity -v -p codesigning 2>/dev/null \
+    | awk -F'"' '/"(Apple Development|Developer ID Application): / { print $2; exit }')
+  [ -n "$name" ] || return 0
+  security find-certificate -c "$name" -p 2>/dev/null | openssl x509 -noout -subject 2>/dev/null \
+    | sed -n 's#.*/OU=\([A-Z0-9]*\)/.*#\1#p'
+}
+
 echo "==> Checking release prerequisites"
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" = "main" ]; then ok "on main"; else missing "on $branch, not main" "git switch main"; fi
@@ -62,9 +73,10 @@ fi
 if xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
   ok "notarytool profile $NOTARY_PROFILE"
 else
-  missing "notarytool profile '$NOTARY_PROFILE' not found" \
-    "xcrun notarytool store-credentials $NOTARY_PROFILE --apple-id <apple-id> --team-id <team-id>" \
-    "(asks for an app-specific password from account.apple.com)"
+  team=$(team_id)
+  missing "notarytool profile '$NOTARY_PROFILE' not found. Run this and answer its two questions:" \
+    "xcrun notarytool store-credentials $NOTARY_PROFILE${team:+ --team-id $team}" \
+    "(your Apple ID email, then an app-specific password from account.apple.com)"
 fi
 if grep -q '^## \[Unreleased\]' CHANGELOG.md 2>/dev/null; then
   ok "CHANGELOG.md has an Unreleased section"
