@@ -6,7 +6,7 @@ All notable changes to Orrinix are listed here. The format follows
 
 ## [Unreleased]
 
-The next release (1.1.0). Build from source to try it today.
+## [1.1.0] - 2026-11-01
 
 <p>
   <img src="assets/screenshot.png" width="360" alt="The redesigned Orrinix menu bar panel with a ring gauge, a Free up safely button and section chips">
@@ -123,7 +123,8 @@ The next release (1.1.0). Build from source to try it today.
   faster simulator shutdown at power off; Turkish localization; and
   `Orrinix --json`.
 
-[Unreleased]: https://github.com/Abbasm234/orrinix/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/Abbasm234/orrinix/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Abbasm234/orrinix/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/Abbasm234/orrinix/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/Abbasm234/orrinix/releases/tag/v1.0.1
 [0.3.5]: https://github.com/Abbasm234/orrinix/commits/546f825
