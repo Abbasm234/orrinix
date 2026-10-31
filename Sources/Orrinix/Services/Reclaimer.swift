@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Executes a `ReclaimAction`. Every filesystem mutation in the app goes
@@ -32,6 +33,15 @@ enum Reclaimer {
                 throw CommandError(command: script, result: result)
             }
 
+        case .deleteSimulatorRuntime(let identifier, let build):
+            try await deleteRuntime(identifier, build: build)
+
+        case .requireQuit(let bundleIDs, let appName):
+            let running = bundleIDs.contains {
+                !NSRunningApplication.runningApplications(withBundleIdentifier: $0).isEmpty
+            }
+            if running { throw AppRunningError(appName: appName) }
+
         case .shutdownSimulators:
             _ = try? await Shell.run("/usr/bin/xcrun", ["simctl", "shutdown", "all"])
 
@@ -42,6 +52,35 @@ enum Reclaimer {
 
         case .manual:
             return
+        }
+    }
+
+    /// CoreSimulator can unregister a runtime yet fail to reclaim its
+    /// MobileAsset (SimDiskImageError 30). Its own advice is to re-register
+    /// with `scan-and-mount` and delete again; the runtime comes back under a
+    /// new identifier, so it is found again by build number.
+    private static func deleteRuntime(_ identifier: String, build: String) async throws {
+        let xcrun = "/usr/bin/xcrun"
+        let first = try await Shell.run(xcrun, ["simctl", "runtime", "delete", identifier])
+        if first.succeeded { return }
+        guard first.output.contains("scan-and-mount") || first.output.contains("MobileAsset") else {
+            throw CommandError(command: "xcrun simctl runtime delete \(identifier)", result: first)
+        }
+
+        _ = try? await Shell.run(xcrun, ["simctl", "runtime", "scan-and-mount"])
+        let matches = (await ProbeSupport.json(xcrun, ["simctl", "runtime", "list", "-j"]) ?? [:])
+            .compactMap { key, value -> String? in
+                guard let runtime = value as? [String: Any], runtime["build"] as? String == build else { return nil }
+                return key
+            }
+        // Nothing re-registered: the runtime itself is gone and only the
+        // asset entry lingered, which macOS purges on its own.
+        guard !matches.isEmpty else { return }
+        for match in matches {
+            let retry = try await Shell.run(xcrun, ["simctl", "runtime", "delete", match])
+            guard retry.succeeded else {
+                throw CommandError(command: "xcrun simctl runtime delete \(match)", result: retry)
+            }
         }
     }
 
@@ -102,5 +141,13 @@ enum Reclaimer {
         where url.children(includeHidden: true).isEmpty {
             try? fileManager.removeItem(at: url)
         }
+    }
+}
+
+struct AppRunningError: LocalizedError {
+    let appName: String
+
+    var errorDescription: String? {
+        L("Quit %@ first, then try again.", appName)
     }
 }

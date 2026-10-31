@@ -45,3 +45,19 @@ enum ProbeSupport {
 
     static let megabyte: Int64 = 1_048_576
 }
+
+extension ProbeSupport {
+    /// Parses the ISO 8601 timestamps simctl prints.
+    static func isoDate(_ text: String) -> Date? {
+        try? Date(text, strategy: .iso8601)
+    }
+
+    /// "3 months ago", for item details.
+    static func relative(_ date: Date) -> String {
+        date.formatted(.relative(presentation: .named))
+    }
+
+    static func modified(_ url: URL) -> Date? {
+        (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+    }
+}

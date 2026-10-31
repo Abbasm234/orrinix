@@ -2,8 +2,8 @@ import Foundation
 
 /// Groups in the menu, in display order.
 enum StorageCategory: String, CaseIterable, Identifiable, Sendable {
-    case snapshots, simulators, runtimes, xcode, packages, tools, logs, temp, docker
-    case vms, trash, backups, shared, android, apps, projects, system, other
+    case snapshots, xcode, simulators, runtimes, packages, tools, editors, logs, temp, docker
+    case vms, trash, backups, shared, android, browsers, chat, apps, projects, system, other
 
     var id: String { rawValue }
 
@@ -15,6 +15,7 @@ enum StorageCategory: String, CaseIterable, Identifiable, Sendable {
         case .xcode: L("Xcode")
         case .packages: L("Package managers")
         case .tools: L("Developer tool data")
+        case .editors: L("Code editors & IDEs")
         case .logs: L("Logs & diagnostics")
         case .temp: L("Temporary files")
         case .docker: L("Docker")
@@ -23,11 +24,42 @@ enum StorageCategory: String, CaseIterable, Identifiable, Sendable {
         case .backups: L("iOS device backups")
         case .shared: L("Shared & other users")
         case .android: L("Android")
+        case .browsers: L("Browsers")
+        case .chat: L("Chat & meeting apps")
         case .apps: L("App data & caches")
         case .projects: L("Project build folders")
         case .system: L("System")
         case .other: L("Other large folders")
         }
+    }
+
+    var section: StorageSection {
+        switch self {
+        case .xcode, .simulators, .runtimes: .xcode
+        case .packages, .tools, .editors, .docker, .vms, .android, .projects: .developer
+        case .browsers, .chat, .apps: .apps
+        case .snapshots, .logs, .temp, .trash, .backups, .shared, .system, .other: .system
+        }
+    }
+}
+
+/// The sidebar groups categories into a handful of sections.
+enum StorageSection: String, CaseIterable, Identifiable, Sendable {
+    case xcode, developer, apps, system
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .xcode: L("Xcode & Simulators")
+        case .developer: L("Developer Tools")
+        case .apps: L("Apps & Browsers")
+        case .system: L("System")
+        }
+    }
+
+    var categories: [StorageCategory] {
+        StorageCategory.allCases.filter { $0.section == self }
     }
 }
 
@@ -55,6 +87,12 @@ enum ReclaimAction: Sendable {
     case pruneOlderThan(URL, days: Int)
     case command(executable: String, arguments: [String])
     case privilegedScript(String)
+    /// `simctl runtime delete`, retried once after re-registering the
+    /// runtime when CoreSimulator leaves its MobileAsset behind.
+    case deleteSimulatorRuntime(identifier: String, build: String)
+    /// Fails with a clear message while any of these apps is running, so
+    /// caches are never pulled out from under a live process.
+    case requireQuit(bundleIDs: [String], appName: String)
     /// Shuts every simulator down, ignoring the result. Files a booted
     /// simulator has mapped cannot be deleted, not even by root.
     case shutdownSimulators
@@ -78,7 +116,7 @@ enum ReclaimAction: Sendable {
         case .removePaths(let urls), .emptyDirectories(let urls): urls
         case .pruneOlderThan(let url, _): [url]
         case .steps(let actions): actions.flatMap(\.paths)
-        case .command, .privilegedScript, .shutdownSimulators, .manual: []
+        case .command, .privilegedScript, .deleteSimulatorRuntime, .requireQuit, .shutdownSimulators, .manual: []
         }
     }
 }

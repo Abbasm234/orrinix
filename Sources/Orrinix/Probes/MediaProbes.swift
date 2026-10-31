@@ -49,22 +49,48 @@ struct AppCacheProbe: StorageProbe {
     private struct Entry {
         let id: String
         let name: String
-        let path: String
+        let paths: [String]
         let detail: String
         let safety: Safety
+        let category: StorageCategory
+
+        init(id: String, name: String, path: String..., detail: String, safety: Safety, category: StorageCategory = .apps) {
+            self.id = id
+            self.name = name
+            self.paths = path
+            self.detail = detail
+            self.safety = safety
+            self.category = category
+        }
     }
 
     private static let entries: [Entry] = [
-        Entry(id: "slack", name: "Slack cache", path: "Library/Application Support/Slack/Cache",
-              detail: "Message and file previews. Rebuilt as you use Slack.", safety: .safe),
+        Entry(id: "slack", name: "Slack cache",
+              path: "Library/Application Support/Slack/Cache", "Library/Application Support/Slack/Code Cache",
+              "Library/Application Support/Slack/GPUCache",
+              detail: "Message and file previews. Rebuilt as you use Slack.", safety: .safe, category: .chat),
         Entry(id: "slack-sw", name: "Slack service worker cache", path: "Library/Application Support/Slack/Service Worker/CacheStorage",
-              detail: "Web app assets. Re-downloaded on next launch.", safety: .safe),
-        Entry(id: "discord", name: "Discord cache", path: "Library/Application Support/discord/Cache",
-              detail: "Media previews. Rebuilt as you use Discord.", safety: .safe),
+              detail: "Web app assets. Re-downloaded on next launch.", safety: .safe, category: .chat),
+        Entry(id: "discord", name: "Discord cache",
+              path: "Library/Application Support/discord/Cache", "Library/Application Support/discord/Code Cache",
+              "Library/Application Support/discord/GPUCache",
+              detail: "Media previews and compiled scripts. Rebuilt as you use Discord.", safety: .safe, category: .chat),
         Entry(id: "teams", name: "Microsoft Teams cache", path: "Library/Containers/com.microsoft.teams2/Data/Library/Caches",
-              detail: "Rebuilt as you use Teams.", safety: .safe),
+              detail: "Rebuilt as you use Teams.", safety: .safe, category: .chat),
         Entry(id: "zoom", name: "Zoom data", path: "Library/Application Support/zoom.us",
-              detail: "Update packages and logs. Zoom re-downloads what it needs.", safety: .review),
+              detail: "Update packages and logs. Zoom re-downloads what it needs.", safety: .review, category: .chat),
+        Entry(id: "whatsapp-media", name: "WhatsApp media",
+              path: "Library/Group Containers/group.net.whatsapp.WhatsApp.shared/Message/Media",
+              detail: "Photos, videos and documents received in chats. Removed from this Mac only; your phone keeps its copy.",
+              safety: .review, category: .chat),
+        Entry(id: "telegram-media", name: "Telegram media cache",
+              path: "Library/Group Containers/6N38VWS5BX.ru.keepcoder.Telegram/stable",
+              detail: "Downloaded media for every account. Telegram fetches it again from the cloud when opened.",
+              safety: .review, category: .chat),
+        Entry(id: "messenger", name: "Messenger cache", path: "Library/Containers/com.facebook.archon/Data/Library/Caches",
+              detail: "Rebuilt as you use Messenger.", safety: .safe, category: .chat),
+        Entry(id: "webex", name: "Webex cache", path: "Library/Caches/com.cisco.webexmeetingsapp",
+              detail: "Meeting client downloads.", safety: .safe, category: .chat),
         Entry(id: "spotify", name: "Spotify cache", path: "Library/Application Support/Spotify/PersistentCache",
               detail: "Streamed audio cache. Downloaded playlists are kept elsewhere.", safety: .safe),
         Entry(id: "adobe-media", name: "Adobe media cache", path: "Library/Application Support/Adobe/Common/Media Cache Files",
@@ -90,14 +116,16 @@ struct AppCacheProbe: StorageProbe {
     func probe() async -> [StorageItem] {
         var items: [StorageItem] = []
         for entry in Self.entries {
-            let url = URL.home(entry.path)
-            if let item = await ProbeSupport.directoryItem(
-                id: "cache-\(entry.id)", category: .apps, name: entry.name, detail: entry.detail,
-                url: url, safety: entry.safety, action: .emptyDirectories([url]),
-                minimumBytes: 20 * ProbeSupport.megabyte
-            ) {
-                items.append(item)
-            }
+            let urls = entry.paths.map(URL.home).filter(\.exists)
+            guard !urls.isEmpty else { continue }
+            var total: Int64 = 0
+            for url in urls { total += await DiskSize.allocated(at: url) }
+            guard total >= 20 * ProbeSupport.megabyte else { continue }
+            items.append(StorageItem(
+                id: "cache-\(entry.id)", category: entry.category, name: entry.name, detail: entry.detail,
+                sizeBytes: total, safety: entry.safety, action: .emptyDirectories(urls), revealURL: urls[0],
+                alsoClaims: Array(urls.dropFirst())
+            ))
         }
 
         // Final Cut Pro render files live inside each library bundle.
